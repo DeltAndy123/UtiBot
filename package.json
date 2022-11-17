@@ -27,7 +27,7 @@
     "mathjs": "^11.2.1",
     "module-alias": "^2.2.2",
     "mongoose": "^6.7.2",
-    "tsc": "^2.0.4"
+    "typescript": "^4.9.3"
   },
   "overrides": {
     "@discordjs/builders": "^1.4.0-dev.1668254627-ff85481.0"
