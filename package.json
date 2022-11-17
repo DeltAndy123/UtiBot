@@ -4,8 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "bot": "tsc && ts-node .",
-    "dev": "tsc-watch --onCompilationStarted \"ts-purify -s src -d dist\" --onSuccess \"node ./dist/index.js\""
+    "bot": "tsc && node dist/index.js",
+    "dev": "tsc-watch --onCompilationStarted \"ts-purify -s src -d dist\" --onSuccess \"node ./dist/index.js\"",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
