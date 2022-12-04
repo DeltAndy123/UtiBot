@@ -8,6 +8,7 @@ export class CommandsCommand extends Subcommand {
   public constructor(context: Subcommand.Context, options: Subcommand.Options) {
     super(context, {
       ...options,
+      preconditions: ['OwnerOnly'],
       subcommands: [
         {
           name: "list",

@@ -19,6 +19,7 @@ export class UserPrecondition extends AllFlowsPrecondition {
 	private doOwnerCheck(userId: Snowflake) {
 		return process.env.OWNER_IDS!.includes(userId) ? this.ok() : this.error({
 			message: this.#message,
+			identifier: 'OwnerOnly',
 		});
 	}
 }

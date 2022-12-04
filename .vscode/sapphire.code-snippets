@@ -120,15 +120,8 @@
 		"body": [
 			"import mongoose from 'mongoose';",
 			"",
-			"function reqVal(val: any) {",
-			"  return {",
-			"    type: val,",
-			"    required: true",
-			"  }",
-			"}",
-			"",
 			"const schema = new mongoose.Schema({",
-			"  _id: reqVal(String),",
+			"  _id: String,",
 			"});",
 			"",
 			"export default mongoose.model('schema-name', schema, 'schema-name');"

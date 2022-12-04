@@ -25,6 +25,7 @@ class UserPrecondition extends framework_1.AllFlowsPrecondition {
     doOwnerCheck(userId) {
         return process.env.OWNER_IDS.includes(userId) ? this.ok() : this.error({
             message: __classPrivateFieldGet(this, _UserPrecondition_message, "f"),
+            identifier: 'OwnerOnly',
         });
     }
 }
