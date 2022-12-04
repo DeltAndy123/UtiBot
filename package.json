@@ -6,7 +6,7 @@
   "scripts": {
     "bot": "tsc && node dist/index.js",
     "dev": "tsc-watch --onCompilationStarted \"ts-purify -s src -d dist\" --onSuccess \"node ./dist/index.js\"",
-    "build": "sudo npm i -g typescript; tsc",
+    "build": "tsc",
     "start": "node dist/index.js"
   },
   "repository": {
@@ -28,11 +28,13 @@
     "dotenv": "^16.0.3",
     "mathjs": "^11.2.1",
     "module-alias": "^2.2.2",
-    "mongoose": "^6.7.2",
-    "typescript": "^4.9.3"
+    "mongoose": "^6.7.2"
   },
   "_moduleAliases": {
     "@util": "dist/util",
     "@schemas": "dist/schemas"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.3"
   }
 }
