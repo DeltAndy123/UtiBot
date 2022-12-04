@@ -1,5 +1,5 @@
 import { Command, ChatInputCommand } from '@sapphire/framework';
-import { ChannelType, DiscordAPIError, Message, TextChannel } from 'discord.js';
+import { ChannelType, DiscordAPIError, Message, PermissionFlagsBits, TextChannel } from 'discord.js';
 
 export class ClearCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -15,6 +15,7 @@ export class ClearCommand extends Command {
       builder
         .setName('clear')
         .setDescription('Clears a certain chat\'s messages')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .addStringOption((option) =>
           option
             .setName('amount')

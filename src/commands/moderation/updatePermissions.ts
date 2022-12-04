@@ -1,7 +1,7 @@
 import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import changePermissions from '@util/change-permissions';
 import channelPermissions from '@util/channel-permissions';
-import { GuildMember, Role, TextChannel, User } from 'discord.js';
+import { GuildMember, PermissionFlagsBits, Role, TextChannel, User } from 'discord.js';
 const permissionTypes = Object.values(channelPermissions);
 
 export class UpdatePermissionsCommand extends Command {
@@ -19,7 +19,7 @@ export class UpdatePermissionsCommand extends Command {
       builder
         .setName('update-permissions')
         .setDescription('Change the permissions of a channel')
-        .setDefaultMemberPermissions('ManageRoles')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addMentionableOption((option) =>
           option
             .setName('role')
