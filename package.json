@@ -6,7 +6,7 @@
   "scripts": {
     "bot": "tsc && node dist/index.js",
     "dev": "tsc-watch --onCompilationStarted \"ts-purify -s src -d dist\" --onSuccess \"node ./dist/index.js\"",
-    "build": "tsc",
+    "build": "npm i -g typescript; tsc",
     "start": "node dist/index.js"
   },
   "repository": {
