@@ -35,7 +35,7 @@ console.log(`Listening on port ${port}`);
 const server = http.createServer((req, res) => {
   res.writeHead(200);
   res.end('Hello World!');
-  console.log("Ping Received");
+  // console.log("Ping Received");
 });
 
 server.listen(port);
