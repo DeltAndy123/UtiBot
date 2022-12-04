@@ -8,6 +8,7 @@ require("module-alias/register");
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const discord_js_1 = require("discord.js");
+const http_1 = __importDefault(require("http"));
 dotenv_1.default.config();
 mongoose_1.default.connect(process.env.MONGO_URI);
 const client = new framework_1.SapphireClient({
@@ -25,3 +26,11 @@ client.on(framework_1.Events.MessageCreate, (msg) => {
 });
 global.client = client;
 client.login(process.env.TOKEN);
+const port = process.env.PORT || 3000;
+console.log(`Listening on port ${port}`);
+const server = http_1.default.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('Hello World!');
+    console.log(req);
+});
+server.listen(port);

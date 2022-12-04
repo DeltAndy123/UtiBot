@@ -4,7 +4,7 @@ exports.PingCommand = void 0;
 const framework_1 = require("@sapphire/framework");
 class PingCommand extends framework_1.Command {
     constructor(context, options) {
-        super(context, Object.assign(Object.assign({}, options), { preconditions: ['CommandEnabled'] }));
+        super(context, Object.assign({}, options));
     }
     registerApplicationCommands(registry) {
         registry.registerChatInputCommand((builder) => builder
