@@ -19,6 +19,7 @@ export class UpdatePermissionsCommand extends Command {
       builder
         .setName('update-permissions')
         .setDescription('Change the permissions of a channel')
+        .setDefaultMemberPermissions('ManageRoles')
         .addMentionableOption((option) =>
           option
             .setName('role')

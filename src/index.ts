@@ -24,8 +24,6 @@ client.on(Events.MessageCreate, (msg) => {
   }
 })
 
-global.client = client;
-
 client.login(process.env.TOKEN);
 
 const port = process.env.PORT || 3000;

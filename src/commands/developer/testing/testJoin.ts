@@ -28,7 +28,7 @@ export class CmdNameCommand extends Command {
 
     const user = interaction.options.getUser('user') || interaction.user;
 
-    global.client.emit(Events.GuildMemberAdd as any, interaction.guild?.members.cache.get(user.id));
+    this.container.client.emit(Events.GuildMemberAdd as any, interaction.guild?.members.cache.get(user.id));
 
     interaction.reply({ content: 'Emitted member join', ephemeral: true });
 
