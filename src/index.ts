@@ -26,14 +26,14 @@ client.on(Events.MessageCreate, (msg) => {
 
 client.login(process.env.TOKEN);
 
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT || 3000;
 
-console.log(`Listening on port ${port}`);
+// console.log(`Listening on port ${port}`);
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200);
-  res.end('Hello World!');
-  // console.log("Ping Received");
-});
+// const server = http.createServer((req, res) => {
+//   res.writeHead(200);
+//   res.end('Hello World!');
+//   // console.log("Ping Received");
+// });
 
-server.listen(port);
+// server.listen(port);
