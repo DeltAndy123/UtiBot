@@ -22,6 +22,9 @@ class LoggerJoinListener extends framework_1.Listener {
     }
     run(member) {
         return __awaiter(this, void 0, void 0, function* () {
+            const invites = yield member.guild.invites.fetch();
+            const invite = invites.find((i) => global.inviteJoins[i.code] < i.uses);
+            global.inviteJoins[invite.code] = invite.uses;
             const data = yield loggerSettingsSchema_1.default.findOne({
                 _id: member.guild.id,
             });
@@ -38,6 +41,7 @@ class LoggerJoinListener extends framework_1.Listener {
                 .setTitle('Member Joined')
                 .setColor(discord_js_1.Colors.Green)
                 .setDescription(`**${member.user.tag}** (<@${member.user.id}>) has joined the server`)
+                .addFields({ name: 'Invite Used', value: invite ? `${invite.code} (${invite.uses} uses)` : 'Unknown' }, { name: 'Inviter', value: (invite === null || invite === void 0 ? void 0 : invite.inviter) ? `${invite.inviter.tag} (<@${invite.inviter.id}>)` : 'Unknown' })
                 .setThumbnail(member.user.displayAvatarURL())
                 .setTimestamp();
             channel.send({ embeds: [embed] });

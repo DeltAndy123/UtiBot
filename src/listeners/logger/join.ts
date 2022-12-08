@@ -10,7 +10,12 @@ export class LoggerJoinListener extends Listener {
     });
   }
   public async run(member: GuildMember) {
-
+    
+    const invites = await member.guild.invites.fetch();
+    const invite = invites.find((i) => global.inviteJoins[i.code] < i.uses!);
+    
+    global.inviteJoins[invite!.code] = invite!.uses!;
+    
     const data: any = await loggerSettingsSchema.findOne({
       _id: member.guild.id,
     });
@@ -27,6 +32,10 @@ export class LoggerJoinListener extends Listener {
       .setTitle('Member Joined')
       .setColor(Colors.Green)
       .setDescription(`**${member.user.tag}** (<@${member.user.id}>) has joined the server`)
+      .addFields(
+        { name: 'Invite Used', value: invite ? `${invite.code} (${invite.uses} uses)` : 'Unknown' },
+        { name: 'Inviter', value: invite?.inviter ? `${invite.inviter.tag} (<@${invite.inviter.id}>)` : 'Unknown' }
+      )
       .setThumbnail(member.user.displayAvatarURL())
       .setTimestamp();
 

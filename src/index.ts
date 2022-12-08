@@ -3,7 +3,7 @@ import 'module-alias/register';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { GatewayIntentBits } from 'discord.js';
-import http from 'http';
+// import http from 'http';
 
 dotenv.config();
 
@@ -15,14 +15,11 @@ const client = new SapphireClient({
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.GuildMembers,
   ]
 });
 
-client.on(Events.MessageCreate, (msg) => {
-  if ((msg as any).channel.name === 'logs' && msg.author.bot == false) {
-    msg.delete()
-  }
-})
+console.log('Logging in...');
 
 client.login(process.env.TOKEN);
 

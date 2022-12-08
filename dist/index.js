@@ -8,7 +8,7 @@ require("module-alias/register");
 const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const discord_js_1 = require("discord.js");
-const http_1 = __importDefault(require("http"));
+// import http from 'http';
 dotenv_1.default.config();
 mongoose_1.default.connect(process.env.MONGO_URI);
 const client = new framework_1.SapphireClient({
@@ -17,20 +17,16 @@ const client = new framework_1.SapphireClient({
         discord_js_1.GatewayIntentBits.GuildMessages,
         discord_js_1.GatewayIntentBits.MessageContent,
         discord_js_1.GatewayIntentBits.DirectMessages,
+        discord_js_1.GatewayIntentBits.GuildMembers,
     ]
 });
-client.on(framework_1.Events.MessageCreate, (msg) => {
-    if (msg.channel.name === 'logs' && msg.author.bot == false) {
-        msg.delete();
-    }
-});
-global.client = client;
+console.log('Logging in...');
 client.login(process.env.TOKEN);
-const port = process.env.PORT || 3000;
-console.log(`Listening on port ${port}`);
-const server = http_1.default.createServer((req, res) => {
-    res.writeHead(200);
-    res.end('Hello World!');
-    console.log("Ping Received");
-});
-server.listen(port);
+// const port = process.env.PORT || 3000;
+// console.log(`Listening on port ${port}`);
+// const server = http.createServer((req, res) => {
+//   res.writeHead(200);
+//   res.end('Hello World!');
+//   // console.log("Ping Received");
+// });
+// server.listen(port);
