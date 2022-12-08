@@ -14,7 +14,7 @@ export class LoggerJoinListener extends Listener {
     const invites = await member.guild.invites.fetch();
     const invite = invites.find((i) => global.inviteJoins[i.code] < i.uses!);
     
-    global.inviteJoins[invite!.code] = invite!.uses!;
+    if (invite) global.inviteJoins[invite!.code] = invite!.uses!;
     
     const data: any = await loggerSettingsSchema.findOne({
       _id: member.guild.id,
