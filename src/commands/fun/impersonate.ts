@@ -1,5 +1,5 @@
 import { Command, ChatInputCommand } from '@sapphire/framework';
-import { Colors, EmbedBuilder, Webhook } from 'discord.js';
+import { Colors, EmbedBuilder, PermissionFlagsBits, Webhook } from 'discord.js';
 import loggerSettingsSchema from '@schemas/loggerSettingsSchema';
 
 export class ImpersonateCommand extends Command {
@@ -16,6 +16,7 @@ export class ImpersonateCommand extends Command {
       builder
         .setName('impersonate')
         .setDescription('Send a message as another user')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageWebhooks)
         .addUserOption((option) =>
           option
             .setName('user')
