@@ -3,7 +3,7 @@ import 'module-alias/register';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import { GatewayIntentBits } from 'discord.js';
-// import http from 'http';
+import http from 'http';
 
 dotenv.config();
 
@@ -23,14 +23,18 @@ console.log('Logging in...');
 
 client.login(process.env.TOKEN);
 
-// const port = process.env.PORT || 3000;
+if (process.env.PORT) {
 
-// console.log(`Listening on port ${port}`);
+  const port = process.env.PORT || 3000;
 
-// const server = http.createServer((req, res) => {
-//   res.writeHead(200);
-//   res.end('Hello World!');
-//   // console.log("Ping Received");
-// });
+  console.log(`Listening on port ${port}`);
 
-// server.listen(port);
+  const server = http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('Hello World!');
+    // console.log("Ping Received");
+  });
+
+  server.listen(port);
+
+}
