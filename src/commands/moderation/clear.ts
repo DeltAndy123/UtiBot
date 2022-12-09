@@ -88,7 +88,8 @@ export class ClearCommand extends Command {
         while(channelMessages > 0) {
           if (channelMessages != 0) {
             try {
-              await deleteChannel.bulkDelete(100)
+              var msgs = await deleteChannel.messages.fetch({ limit: 100 })
+              await deleteChannel.bulkDelete(msgs)
               channelMessages = (channelMessages - 100) < 0 ? 0 : (channelMessages - 100)
               interaction.editReply({ content: `${channelMessages} messages left` })
               if (channelMessages == 0) interaction.editReply({ content: 'Messages deleted!' })
