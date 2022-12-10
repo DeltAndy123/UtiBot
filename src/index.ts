@@ -1,4 +1,4 @@
-import { Events, SapphireClient } from '@sapphire/framework';
+import { SapphireClient } from '@sapphire/framework';
 import 'module-alias/register';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
