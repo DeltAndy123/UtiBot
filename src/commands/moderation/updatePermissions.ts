@@ -1,8 +1,5 @@
 import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from '@sapphire/framework';
-import changePermissions from '@util/change-permissions';
-import channelPermissions from '@util/channel-permissions';
-import { GuildMember, PermissionFlagsBits, Role, TextChannel, User } from 'discord.js';
-const permissionTypes = Object.values(channelPermissions);
+import { ChannelType, DMChannel, GuildChannel, GuildMember, PermissionFlagsBits, Role, TextChannel, User } from 'discord.js';
 
 export class UpdatePermissionsCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -48,11 +45,20 @@ export class UpdatePermissionsCommand extends Command {
             .setName('channel')
             .setDescription('The channel to change the permissions of')
             .setRequired(false)
+            .addChannelTypes(
+              ChannelType.GuildText,
+              ChannelType.GuildVoice,
+              ChannelType.GuildCategory,
+              ChannelType.GuildAnnouncement,
+              ChannelType.GuildForum,
+            )
         )
     );
   }
 
   public chatInputRun(interaction: Command.ChatInputCommandInteraction) {
+
+    if (!interaction.guild) return interaction.reply('This command can only be used in a guild');
 
     const { guild, channel } = interaction;
 
@@ -63,16 +69,24 @@ export class UpdatePermissionsCommand extends Command {
     const permissions = interaction.options.getString('permissions', true).split(' ');
 
     for (const permission of permissions) {
-      if (!permissionTypes.includes(permission)) {
+      if (permission in PermissionFlagsBits === false) {
         return interaction.reply(`Invalid permission: ${permission}`);
       }
     }
 
-    changePermissions(selectedChannel as TextChannel, role as Role | User, {
-      enable: action === "true" ? permissions : [],
-      null: action === "null" ? permissions : [],
-      disable: action === "false" ? permissions : [],
-    });
+    (selectedChannel as GuildChannel).permissionOverwrites.edit(
+      (role as GuildMember | Role).id, 
+      permissions.reduce((acc, permission) => {
+        if (action === 'true') {
+          acc[permission] = true;
+        } else if (action === 'false') {
+          acc[permission] = false;
+        } else {
+          acc[permission] = null;
+        }
+        return acc;
+      }, {} as Record<string, boolean | null>)
+    );
 
     interaction.reply(`Permissions updated for \`${
       role instanceof Role

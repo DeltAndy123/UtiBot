@@ -26,25 +26,21 @@ export class EvalCommand extends Command {
 
   public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
 
-    // if (process.env.OWNER_IDS?.split(', ').includes(interaction.user.id)) {
-      const code = interaction.options.getString('code', true);
-      const time = Date.now();
-      try {
-        const result = await eval(code);
-        const timeTaken = Date.now() - time;
-        const maxlen = 2000 - `Code ran in ${timeTaken}ms\n\`\`\`js`.length - 5;
-        interaction.reply({ content: `Code ran in ${timeTaken}ms\n\`\`\`js
+    const code = interaction.options.getString('code', true);
+    const time = Date.now();
+    try {
+      const result = await eval(code);
+      const timeTaken = Date.now() - time;
+      const maxlen = 2000 - `Code ran in ${timeTaken}ms\n\`\`\`js`.length - 5;
+      interaction.reply({ content: `Code ran in ${timeTaken}ms\n\`\`\`js
 ${`${result}`.slice(0, maxlen)}
 \`\`\``, ephemeral: true });
-      } catch (error: any) {
-        const maxlen = 2000 - `Error: \`\`\`js`.length - 5;
-        interaction.reply({ content: `Error: \`\`\`js
+    } catch (error: any) {
+      const maxlen = 2000 - `Error: \`\`\`js`.length - 5;
+      interaction.reply({ content: `Error: \`\`\`js
 ${`${error}`.substring(0, maxlen)}
 \`\`\``, ephemeral: true });
-      }
-    // } else {
-    //   interaction.reply({ content: 'no', ephemeral: true });
-    // }
+    }
 
   }
 }

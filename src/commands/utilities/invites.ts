@@ -3,7 +3,7 @@ import { ChatInputCommand } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { Colors, GuildMember, Invite, User } from "discord.js";
 
-export class CmdNameCommand extends Subcommand {
+export class InvitesCommand extends Subcommand {
   public constructor(context: Subcommand.Context, options: Subcommand.Options) {
     super(context, {
       ...options,

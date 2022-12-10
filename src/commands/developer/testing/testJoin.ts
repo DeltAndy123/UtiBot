@@ -1,6 +1,7 @@
 import { Command, ChatInputCommand, Events } from '@sapphire/framework';
+import envArray from '@util/env-array';
 
-export class CmdNameCommand extends Command {
+export class TestJoinCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
@@ -19,7 +20,7 @@ export class CmdNameCommand extends Command {
             .setDescription('The user to test join event with')
             .setRequired(false)
         ),
-      { guildIds: process.env.GUILD_IDS?.split(', ') }
+      { guildIds: envArray('GUILD_IDS') }
         
     );
   }

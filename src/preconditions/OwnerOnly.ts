@@ -1,4 +1,5 @@
 import { AllFlowsPrecondition } from '@sapphire/framework';
+import envArray from '@util/env-array';
 import type { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message, Snowflake } from 'discord.js';
 
 export class UserPrecondition extends AllFlowsPrecondition {
@@ -17,7 +18,7 @@ export class UserPrecondition extends AllFlowsPrecondition {
 	}
 
 	private doOwnerCheck(userId: Snowflake) {
-		return process.env.OWNER_IDS!.includes(userId) ? this.ok() : this.error({
+		return envArray('OWNER_IDS').includes(userId) ? this.ok() : this.error({
 			message: this.#message,
 			identifier: 'OwnerOnly',
 		});
