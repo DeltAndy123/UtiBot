@@ -5,8 +5,6 @@ export class InviteCreatedListener extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {
     super(context, {
       ...options,
-      // emitter: container.client,
-      once: false, // Allow feature to run only once
       event: Events.InviteCreate,
     });
   }
