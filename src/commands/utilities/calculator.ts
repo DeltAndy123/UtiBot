@@ -1,6 +1,6 @@
 import { Command, ChatInputCommand } from '@sapphire/framework';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-const { evaluate } = require("mathjs");
+import { evaluate, format } from "mathjs";
 
 export class CalulatorCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -277,8 +277,6 @@ export class CalulatorCommand extends Command {
       filter,
     });
 
-    var fixFloat=(n:number,d=15)=>Math.round(10**d*n)/(10**d)
-
     collector.on("collect", async (i: any) => {
       // If the calculation is message=true, then clear the calculations array
       if (calculations[0]?.message) {
@@ -515,8 +513,7 @@ export class CalulatorCommand extends Command {
           // Calculate
           try {
             calculations = [];
-            var result = evaluate(calculation);
-            result = fixFloat(result).toString();
+            var result = format(evaluate(calculation), { precision: 14 }).toString();
             switch (calculation) {
               case "0/0":
                 result = "ERROR_ZERO_DIVIDED_BY_ZERO";
@@ -564,6 +561,7 @@ export class CalulatorCommand extends Command {
             if (debug) {
               calculations[0].display = error.toString();
             }
+            var result = "Error";
           }
           previousCalc = calculationDisplay;
           previousAns = result;
