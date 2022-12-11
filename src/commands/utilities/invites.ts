@@ -149,12 +149,12 @@ export class InvitesCommand extends Subcommand {
     }
 
     const { inviter }: { inviter: User | null } = invite;
-    const inviterMember: GuildMember = inviter ? interaction.guild.members.cache.get(inviter.id) : null;
+    const inviterMember: GuildMember | null = inviter ? interaction.guild.members.cache.get(inviter.id) : null;
 
     const embed = new EmbedBuilder()
       .setTitle("Invite Info")
       .setDescription(`Info about invite \`${invite.code}\``)
-      .setColor(inviterMember.displayColor || Colors.Blurple)
+      .setColor(inviterMember ? inviterMember.displayColor : Colors.Blurple)
       .addFields(
         {
           name: "Uses",
