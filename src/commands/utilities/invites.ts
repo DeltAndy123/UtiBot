@@ -1,14 +1,14 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { ChatInputCommand } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { Colors, GuildMember, Invite, User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Collection, Colors, GuildMember, InteractionCollector, Invite, Message, User } from "discord.js";
 
 export class InvitesCommand extends Subcommand {
   public constructor(context: Subcommand.Context, options: Subcommand.Options) {
     super(context, {
       ...options,
-      requiredUserPermissions: ["SendMessages"],
-      requiredClientPermissions: ["SendMessages"],
+      requiredUserPermissions: ["CreateInstantInvite"],
+      requiredClientPermissions: ["ManageGuild"],
       subcommands: [
         {
           name: "list",
@@ -57,26 +57,85 @@ export class InvitesCommand extends Subcommand {
 
   public async list(interaction: Subcommand.ChatInputInteraction) {
     
-    var invites = await interaction.guild.invites.fetch();
+    var invites: Collection<string, Invite> = await interaction.guild.invites.fetch();
     const member: GuildMember = interaction.options.getMember("member");
+    var currentPage = 1;
+    const perPage = 5;
 
     if (member) {
       invites = invites.filter((invite: Invite) => invite.inviter && invite.inviter.id === member.user.id);
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle("Invites")
-      .setDescription(member ? `Invites from ${member} in this server` : "Invites in this server")
-      .setColor(member ? member.displayColor || Colors.Blurple : Colors.Blurple);
+    function embedPage(page: number, perPage: number) {
 
-    invites.forEach((invite: Invite) => {
-      embed.addFields({
-        name: invite.code,
-        value: `Uses: ${invite.uses}\nMax uses: ${invite.maxUses}\nChannel: ${invite.channel}\nCreated: ${invite.createdTimestamp ? `<t:${Math.round(invite.createdTimestamp / 1000)}:f>` : 'N/A'}\nExpires: ${invite.expiresTimestamp ? `<t:${Math.round(invite.expiresTimestamp / 1000)}:f>` : 'N/A'}${!member ? `\nCreated by: ${invite.inviter}` : ""}`,
+      const embed = new EmbedBuilder()
+        .setTitle(`Invites (${invites.size} total)`)
+        .setDescription(member ? `Invites from ${member} in this server` : "Invites in this server")
+        .setColor(member ? member.displayColor || Colors.Blurple : Colors.Blurple);
+
+      const components = [];
+
+      if (invites.size > perPage) {
+        embed.setFooter({ text: `Page ${page} of ${Math.ceil(invites.size / perPage)}` })
+        components.push(
+          new ActionRowBuilder()
+            .addComponents(
+              new ButtonBuilder()
+                .setCustomId("invites_list_previous")
+                .setLabel("Previous")
+                .setStyle(ButtonStyle.Primary)
+                .setDisabled(page === 1),
+              new ButtonBuilder()
+                .setCustomId("invites_list_next")
+                .setLabel("Next")
+                .setStyle(ButtonStyle.Primary)
+                .setDisabled(page === Math.ceil(invites.size / perPage))
+            )
+        );
+      }
+
+      // pageInvites.forEach((invite: Invite) => {
+      //   embed.addFields({
+      //     name: invite.code,
+      //     value: `Uses: ${invite.uses}\nMax uses: ${invite.maxUses}\nChannel: ${invite.channel}\nCreated: ${invite.createdTimestamp ? `<t:${Math.round(invite.createdTimestamp / 1000)}:f>` : 'N/A'}\nExpires: ${invite.expiresTimestamp ? `<t:${Math.round(invite.expiresTimestamp / 1000)}:f>` : 'N/A'}${!member ? `\nCreated by: ${invite.inviter}` : ""}`,
+      //   });
+      // });
+
+      var i = 0;
+      invites.forEach((invite: Invite) => {
+        if (i >= (page - 1) * perPage && i < page * perPage) {
+          embed.addFields({
+            name: invite.code,
+            value: `Uses: ${invite.uses}\nMax uses: ${invite.maxUses}\nChannel: ${invite.channel}\nCreated: ${invite.createdTimestamp ? `<t:${Math.round(invite.createdTimestamp / 1000)}:f>` : 'N/A'}\nExpires: ${invite.expiresTimestamp ? `<t:${Math.round(invite.expiresTimestamp / 1000)}:f>` : 'N/A'}${!member ? `\nCreated by: ${invite.inviter}` : ""}`,
+          });
+        }
+        i++;
       });
-    });
 
-    await interaction.reply({ embeds: [embed] });
+      return {embeds: [embed], components};
+
+    }
+
+    await interaction.reply(embedPage(currentPage, perPage));
+    const reply: Message<true> = await interaction.fetchReply();
+    
+    const collector: any = reply.createMessageComponentCollector()
+
+    collector.on("collect", async (i: ButtonInteraction) => {
+      if (i.user.id !== interaction.user.id) {
+        return i.reply({ content: "You can't use this button!", ephemeral: true });
+      }
+
+      if (i.customId === "invites_list_previous") {
+        currentPage--;
+      }
+      if (i.customId === "invites_list_next") {
+        currentPage++;
+      }
+
+      await (reply as any).edit(embedPage(currentPage, perPage));
+      i.deferUpdate();
+    });
 
   }
 
