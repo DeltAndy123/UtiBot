@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { ChatInputCommand } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Collection, Colors, GuildMember, InteractionCollector, Invite, Message, User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Collection, Colors, GuildMember, InteractionCollector, Invite, Message, PermissionFlagsBits, User } from "discord.js";
 
 export class InvitesCommand extends Subcommand {
   public constructor(context: Subcommand.Context, options: Subcommand.Options) {
@@ -30,6 +30,7 @@ export class InvitesCommand extends Subcommand {
         builder
           .setName("invites")
           .setDescription("View the invites of a server and its info")
+          .setDefaultMemberPermissions(PermissionFlagsBits.CreateInstantInvite)
           .addSubcommand((subcmd) =>
             subcmd
               .setName("list")
@@ -51,7 +52,6 @@ export class InvitesCommand extends Subcommand {
                   .setRequired(true)
               )
           ),
-      // { guildIds: [ 'TESTID' ] }, // Uncomment this line to register the command in a specific guild
     );
   }
 
@@ -93,13 +93,6 @@ export class InvitesCommand extends Subcommand {
             )
         );
       }
-
-      // pageInvites.forEach((invite: Invite) => {
-      //   embed.addFields({
-      //     name: invite.code,
-      //     value: `Uses: ${invite.uses}\nMax uses: ${invite.maxUses}\nChannel: ${invite.channel}\nCreated: ${invite.createdTimestamp ? `<t:${Math.round(invite.createdTimestamp / 1000)}:f>` : 'N/A'}\nExpires: ${invite.expiresTimestamp ? `<t:${Math.round(invite.expiresTimestamp / 1000)}:f>` : 'N/A'}${!member ? `\nCreated by: ${invite.inviter}` : ""}`,
-      //   });
-      // });
 
       var i = 0;
       invites.forEach((invite: Invite) => {

@@ -7,8 +7,7 @@ export class LoggerSettingsCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
-      requiredUserPermissions: ['Administrator'],
-      // requiredClientPermissions: ['SendMessages'],
+      requiredUserPermissions: ['ManageGuild'],
     });
   }
 
@@ -17,7 +16,7 @@ export class LoggerSettingsCommand extends Command {
       builder
         .setName('logger')
         .setDescription('Customize the logger')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
         .setDMPermission(false)
     );
   }

@@ -5,8 +5,6 @@ export class EvalCommand extends Command {
     super(context, {
       ...options,
       preconditions: ['OwnerOnly'],
-      // requiredUserPermissions: ['SendMessages'],
-      // requiredClientPermissions: ['SendMessages'], 
     });
   }
 

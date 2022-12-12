@@ -20,6 +20,12 @@ export class CalulatorCommand extends Command {
             .setDescription('Debug mode (Shows error messages when there is an error)')
             .setRequired(false)
         )
+        .addIntegerOption((option) =>
+          option
+            .setName('precision')
+            .setDescription('Precision of the calculator (Default: 14)')
+            .setRequired(false)
+        )
     );
   }
 
@@ -513,7 +519,7 @@ export class CalulatorCommand extends Command {
           // Calculate
           try {
             calculations = [];
-            var result = format(evaluate(calculation), { precision: 14 }).toString();
+            var result = format(evaluate(calculation), { precision: interaction.options.getInteger("precision") || 14 });
             switch (calculation) {
               case "0/0":
                 result = "ERROR_ZERO_DIVIDED_BY_ZERO";

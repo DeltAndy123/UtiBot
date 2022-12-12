@@ -7,7 +7,7 @@ export class ImpersonateCommand extends Command {
     super(context, {
       ...options,
       requiredUserPermissions: ['ManageWebhooks'],
-      requiredClientPermissions: ['Administrator'],
+      requiredClientPermissions: ['ManageWebhooks'],
     });
   }
 
