@@ -47,7 +47,9 @@ export class CalulatorCommand extends Command {
      * [2nd] [abs] [x!] [=]
      */
 
-    if (interaction.options.getInteger("precision") < 1) return interaction.reply("Precision can not be less than 1!")
+    const precision = interaction.options.getInteger("precision")
+
+    if (precision && precision < 1) return interaction.reply("Precision can not be less than 1!")
 
     var calculations: any[] = [];
     var previousCalc = "";
@@ -268,7 +270,7 @@ export class CalulatorCommand extends Command {
         calculationDisplay === "" ? " " : calculationDisplay
       }\n\`\`\``
       if (debug) content = '*Debug Mode*\n' + content
-      if (interaction.options.getInteger("precision") && interaction.options.getInteger("precision") != 14) content = `**Precision: \`${interaction.options.getInteger("precision").toString()}\`**\n`
+      if (precision && precision != 14) content = `**Precision: \`${interaction.options.getInteger("precision").toString()}\`**\n`
       return {
         content,
         components: second ? buttonRows2 : buttonRows,
