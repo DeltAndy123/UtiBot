@@ -270,7 +270,7 @@ export class CalulatorCommand extends Command {
         calculationDisplay === "" ? " " : calculationDisplay
       }\n\`\`\``
       if (debug) content = '*Debug Mode*\n' + content
-      if (precision! != 14) content = `**Precision: \`${interaction.options.getInteger("precision").toString()}\`**\n`
+      if (precision! != 14) content = `**Precision: \`${precision}\`**\n`
       return {
         content,
         components: second ? buttonRows2 : buttonRows,
