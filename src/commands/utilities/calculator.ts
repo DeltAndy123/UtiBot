@@ -50,6 +50,7 @@ export class CalulatorCommand extends Command {
     const precision = interaction.options.getInteger("precision")
 
     if (precision && precision < 1) return interaction.reply("Precision can not be less than 1!")
+    if (precision && precision > 14) return interaction.reply("Precision can not be more than 14!")
 
     var calculations: any[] = [];
     var previousCalc = "";
