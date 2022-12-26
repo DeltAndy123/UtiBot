@@ -1,6 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from "@discordjs/builders";
 import { Command, ChatInputCommand } from "@sapphire/framework";
-import { ButtonInteraction, ButtonStyle, ComponentType } from "discord.js";
+import { ButtonInteraction, ButtonStyle, ComponentType, PermissionFlagsBits } from "discord.js";
+import pollSchema from "@schemas/pollSchema";
 
 export class CmdNameCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -19,6 +20,7 @@ export class CmdNameCommand extends Command {
         builder
           .setName("poll")
           .setDescription("Create a poll that users can vote on")
+          .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
           .addStringOption((option) =>
             option
               .setName("question")
@@ -104,11 +106,19 @@ export class CmdNameCommand extends Command {
     const options = [option1, option2, option3, option4, option5, option6, option7, option8, option9, option10]
       .filter((option) => option);
 
+    await pollSchema.create({
+      _id: interaction.id,
+      question,
+      options,
+      votes: options.map(() => []),
+      author: interaction.user.id,
+    });
+
     const embed = new EmbedBuilder()
       .setTitle(question)
       .setDescription(options.map((option, index) => `${index + 1}. ${option} (0 votes)`).join("\n"))
       .setColor(Math.floor(Math.random() * 0xffffff))
-      .setFooter({ text: `Poll created by ${interaction.user.tag}` });
+      .setFooter({ text: `Poll created by ${interaction.user.tag} • Poll ID: ${interaction.id}` });
 
     var components = [];
 
@@ -136,98 +146,21 @@ export class CmdNameCommand extends Command {
       );
     }
 
+    components.push(
+      new ActionRowBuilder<ButtonBuilder>()
+        .addComponents(
+          new ButtonBuilder()
+            .setCustomId('poll-removeVote')
+            .setLabel('Remove Vote')
+            .setStyle(ButtonStyle.Danger),
+          new ButtonBuilder()
+            .setCustomId('poll-end')
+            .setLabel('End Poll')
+            .setStyle(ButtonStyle.Secondary)
+        )
+    );
+
     interaction.reply({ embeds: [embed], components });
-    const reply = await interaction.fetchReply();
-
-    var votes: {
-      users: {
-        user: string;
-        option: number;
-      }[],
-      votes: number[];
-    } = {
-      users: [],
-      votes: new Array(options.length).fill(0)
-    };
-
-    const filter = (i: ButtonInteraction) => i.customId.startsWith("poll-");
-    const collector = reply.createMessageComponentCollector<ComponentType.Button>({ filter });
-
-    const removeRow = new ActionRowBuilder<ButtonBuilder>()
-      .addComponents(
-        new ButtonBuilder()
-          .setCustomId('poll-removeVote')
-          .setLabel('Remove Vote')
-          .setStyle(ButtonStyle.Danger)
-      )
-    const removeFilter = (i: ButtonInteraction) => i.customId === "poll-removeVote";
-    const removeCallback = async (i: ButtonInteraction) => {
-      const vote = votes.users.find((vote) => vote.user === i.user.id);
-      if (vote) {
-        votes.votes[vote.option - 1] -= 1;
-        votes.users = votes.users.filter((vote) => vote.user !== i.user.id);
-        embed.setDescription(options.map((option, index) => `${index + 1}. ${option} (${votes.votes[index]} votes)`).join("\n"));
-        await reply.edit({ embeds: [embed] });
-        i.update({
-          content: "Vote removed",
-          components: [],
-        });
-      } else {
-        i.update({
-          content: "You didn't vote",
-          components: [],
-        });
-      }
-    };
-
-    
-    collector.on("collect", async (i) => {
-      const index = parseInt(i.customId.split("-")[1]);
-      const vote = votes.users.find((vote) => vote.user === i.user.id);
-      if (vote) {
-        if (vote.option === index) {
-          i.reply({
-            content: "You already voted for this option",
-            components: [removeRow],
-            ephemeral: true
-          });
-          const r = await i.fetchReply();
-          r.createMessageComponentCollector<ComponentType.Button>({ filter: removeFilter, time: 10000 }).on("collect", removeCallback);
-        } else {
-          votes.votes[vote.option - 1] -= 1;
-          votes.votes[index - 1] += 1;
-          votes.users = votes.users.filter((vote) => vote.user !== i.user.id);
-          votes.users.push({
-            user: i.user.id,
-            option: index,
-          });
-          embed.setDescription(options.map((option, index) => `${index + 1}. ${option} (${votes.votes[index]} votes)`).join("\n"));
-          await reply.edit({ embeds: [embed] });
-          i.reply({
-            content: "Vote changed",
-            components: [removeRow],
-            ephemeral: true
-          });
-          const r = await i.fetchReply();
-          r.createMessageComponentCollector<ComponentType.Button>({ filter: removeFilter, time: 10000 }).on("collect", removeCallback);
-        }
-      } else {
-        votes.votes[index - 1] += 1;
-        votes.users.push({
-          user: i.user.id,
-          option: index,
-        });
-        embed.setDescription(options.map((option, index) => `${index + 1}. ${option} (${votes.votes[index]} votes)`).join("\n"));
-        await reply.edit({ embeds: [embed] });
-        i.reply({
-          content: "Vote added",
-          components: [removeRow],
-          ephemeral: true
-        });
-        const r = await i.fetchReply();
-        r.createMessageComponentCollector<ComponentType.Button>({ filter: removeFilter, time: 10000 }).on("collect", removeCallback);
-      }
-    });
 
   }
 }
