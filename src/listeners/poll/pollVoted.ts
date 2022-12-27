@@ -1,5 +1,5 @@
 import { Listener, Events } from '@sapphire/framework';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Interaction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Interaction, User } from 'discord.js';
 import pollSchema from '@schemas/pollSchema';
 import { EmbedBuilder } from '@discordjs/builders';
 
@@ -80,9 +80,27 @@ export class PollVotedListener extends Listener {
       }
 
       message.edit({ embeds: [embed], components: [] });
-      interaction.update({ content: '**Poll ended**', components: [] });
+      interaction.message.edit({ content: '**Poll ended**', components: [] });
+
+      interaction.deferUpdate();
 
       await poll.deleteOne();
+      return;
+    }
+
+    if (buttonId === 'viewVotes') {
+      const embed = new EmbedBuilder()
+        .setTitle(poll.question)
+        .setColor(oldEmbed.color)
+        .setFooter({ text: `Poll created by ${author ? author.user.tag : 'UNKNOWN'} • Poll ID: ${poll._id}` })
+        
+      poll.votes.forEach((option, index) => {
+        if (option.length > 0) {
+          embed.addFields({ name: poll.options[index], value: option.map((user: String) => `<@${user}>`).join(', ') });
+        }
+      })
+
+      interaction.reply({ embeds: [embed], ephemeral: true });
       return;
     }
 

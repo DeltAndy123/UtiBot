@@ -12,6 +12,18 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  messageId: {
+    type: String,
+    required: true,
+  },
+  channelId: {
+    type: String,
+    required: true,
+  },
+  guildId: {
+    type: String,
+    required: true,
+  },
 });
 
 export default mongoose.model('polls', schema, 'polls');

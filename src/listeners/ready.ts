@@ -1,5 +1,6 @@
 import { Listener, Events } from '@sapphire/framework';
-import { Client, PermissionFlagsBits } from 'discord.js';
+import { ChannelType, Client, PermissionFlagsBits } from 'discord.js';
+import pollSchema from '@schemas/pollSchema';
 
 export class ReadyListener extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {
@@ -20,6 +21,18 @@ export class ReadyListener extends Listener {
       const guildInvites = await guild.invites.fetch();
       guildInvites.forEach((invite) => {
         global.inviteJoins[invite.code] = invite.uses || 0;
+      });
+    });
+
+    // Fetch all poll messages from the database
+    pollSchema.find().then((polls) => {
+      polls.forEach(async (poll) => {
+        const guild = client.guilds.cache.get(poll.guildId);
+        if (!guild) return;
+        const channel = guild.channels.cache.get(poll.channelId);
+        if (!channel) return;
+        if (channel.type !== ChannelType.GuildText) return;
+        await channel.messages.fetch(poll.messageId);
       });
     });
   }

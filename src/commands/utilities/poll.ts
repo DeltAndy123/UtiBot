@@ -106,14 +106,6 @@ export class CmdNameCommand extends Command {
     const options = [option1, option2, option3, option4, option5, option6, option7, option8, option9, option10]
       .filter((option) => option);
 
-    await pollSchema.create({
-      _id: interaction.id,
-      question,
-      options,
-      votes: options.map(() => []),
-      author: interaction.user.id,
-    });
-
     const embed = new EmbedBuilder()
       .setTitle(question)
       .setDescription(options.map((option, index) => `${index + 1}. ${option} (0 votes)`).join("\n"))
@@ -150,6 +142,10 @@ export class CmdNameCommand extends Command {
       new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
           new ButtonBuilder()
+            .setCustomId('poll-viewVotes')
+            .setLabel('View Votes')
+            .setStyle(ButtonStyle.Success),
+          new ButtonBuilder()
             .setCustomId('poll-removeVote')
             .setLabel('Remove Vote')
             .setStyle(ButtonStyle.Danger),
@@ -161,6 +157,18 @@ export class CmdNameCommand extends Command {
     );
 
     interaction.reply({ embeds: [embed], components });
+    const reply = await interaction.fetchReply();
+
+    await pollSchema.create({
+      _id: interaction.id,
+      question,
+      options,
+      votes: options.map(() => []),
+      author: interaction.user.id,
+      messageId: reply.id,
+      channelId: interaction.channelId,
+      guildId: interaction.guildId,
+    });
 
   }
 }
