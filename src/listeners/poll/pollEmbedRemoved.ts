@@ -22,7 +22,7 @@ export class PollEmbedRemovedListener extends Listener {
 
     if (!poll) return;
 
-    // ASk the user if they want to delete the poll or restore the embed
+    // Ask the user if they want to delete the poll or restore the embed
     // If they want to delete the poll, delete it
     // If they want to restore the embed, restore it
     const embed = new EmbedBuilder()
@@ -45,6 +45,8 @@ export class PollEmbedRemovedListener extends Listener {
 
     const collector = reply.createMessageComponentCollector({ time: 60 * 1000 });
 
+    var pollRestored = false;
+
     collector.on('collect', async (interaction) => {
       if (interaction.message.author.id !== container.client.user?.id) return;
       if (interaction.user.id !== poll.author) {
@@ -53,37 +55,17 @@ export class PollEmbedRemovedListener extends Listener {
       }
       if (interaction.customId === 'restorePoll') {
         oldMessage.edit({ embeds: [...oldMessage.embeds] });
-        reply.delete();
+        pollRestored = true;
+        collector.stop();
       }
       if (interaction.customId === 'endPoll') {
-        const poll = await pollSchema.findOneAndDelete({
-          messageId: oldMessage.id,
-        });
-
-        const newEmbed = new EmbedBuilder()
-          .setTitle(oldMessage.embeds[0].title)
-          .setDescription(oldMessage.embeds[0].description)
-          .setFooter(oldMessage.embeds[0].footer)
-          .setColor(oldMessage.embeds[0].color)
-
-        if (!poll) return;
-        
-        const winners = Object.keys(poll.votes).filter((o: any) => poll.votes[o].length == Math.max(...poll.votes.map(o => o.length)));
-
-        if (winners.length > 1) {
-          newEmbed.addFields({ name: 'Winners', value: winners.map((winner) => poll.options[parseInt(winner)]).join(', ') });
-        } else {
-          newEmbed.addFields({ name: 'Winner', value: poll.options[parseInt(winners[0])] });
-        }
-
-        oldMessage.edit({ content: '**Poll ended**', embeds: [newEmbed], components: [] });
-
-        interaction.deferUpdate();
-        reply.delete();
+        collector.stop();
       }
     })
 
     collector.on('end', async () => {
+      reply.delete();
+      if (pollRestored) return;
       const poll = await pollSchema.findOneAndDelete({
         messageId: oldMessage.id,
       });
@@ -105,8 +87,6 @@ export class PollEmbedRemovedListener extends Listener {
       }
 
       oldMessage.edit({ content: '**Poll ended**', embeds: [newEmbed], components: [] });
-
-      reply.delete();
     })
 
   }

@@ -13,10 +13,10 @@ export class PollMessageDeletedListener extends Listener {
 
     if (message.author.id !== this.container.client.user?.id) return;
     
-    const poll = pollSchema.findOne({
+    const poll = await pollSchema.findOne({
       messageId: message.id,
     });
-
+    
     if (!poll) return;
 
     await poll.deleteOne();
