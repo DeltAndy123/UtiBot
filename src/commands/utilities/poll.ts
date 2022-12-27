@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from "@discordjs/builders";
-import { Command, ChatInputCommand } from "@sapphire/framework";
-import { ButtonInteraction, ButtonStyle, ComponentType, PermissionFlagsBits } from "discord.js";
+import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from "@sapphire/framework";
+import { ButtonStyle, PermissionFlagsBits } from "discord.js";
 import pollSchema from "@schemas/pollSchema";
 
 export class CmdNameCommand extends Command {
@@ -9,6 +9,7 @@ export class CmdNameCommand extends Command {
       ...options,
       requiredUserPermissions: ["ManageGuild"],
       requiredClientPermissions: ["SendMessages"],
+      runIn: CommandOptionsRunTypeEnum.GuildAny,
     });
   }
 

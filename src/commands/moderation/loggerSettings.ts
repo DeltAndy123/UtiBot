@@ -1,4 +1,4 @@
-import { Command, ChatInputCommand } from '@sapphire/framework';
+import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { StringSelectMenuOptionBuilder, StringSelectMenuBuilder } from '@discordjs/builders';
 import { ActionRowBuilder, ChannelSelectMenuBuilder, ChannelType, PermissionFlagsBits } from 'discord.js';
 import loggerSettingsSchema from '@schemas/loggerSettingsSchema';
@@ -8,6 +8,7 @@ export class LoggerSettingsCommand extends Command {
     super(context, {
       ...options,
       requiredUserPermissions: ['ManageGuild'],
+      runIn: CommandOptionsRunTypeEnum.GuildAny,
     });
   }
 

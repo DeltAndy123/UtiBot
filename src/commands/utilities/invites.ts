@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import { ChatInputCommand } from "@sapphire/framework";
+import { ChatInputCommand, CommandOptionsRunTypeEnum } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Collection, Colors, GuildMember, InteractionCollector, Invite, Message, PermissionFlagsBits, User } from "discord.js";
 
@@ -19,6 +19,7 @@ export class InvitesCommand extends Subcommand {
           chatInputRun: "info",
         },
       ],
+      runIn: CommandOptionsRunTypeEnum.GuildAny,
     });
   }
 

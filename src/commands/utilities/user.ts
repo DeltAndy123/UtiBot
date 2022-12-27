@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { Command, ChatInputCommand } from "@sapphire/framework";
-import { Colors, GuildMember } from "discord.js";
+import { Colors, GuildMember, User } from "discord.js";
 
 export class UserCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -29,24 +29,35 @@ export class UserCommand extends Command {
 
   public chatInputRun(interaction: Command.ChatInputCommandInteraction) {
     
+    const user = interaction.options.getUser("user");
     const member = interaction.options.getMember("user");
 
-    if (!(member instanceof GuildMember) || !member.joinedTimestamp) return interaction.reply("Please provide a valid user.");
+    if (!(user instanceof User) || (!(member instanceof GuildMember) && member)) return interaction.reply("Please provide a valid user.");
     
     const embed = new EmbedBuilder()
-      .setTitle(`${member.user.username}'s Information`)
-      .setDescription(`Information about ${member.user.toString()}`)
-      .setColor(member.displayColor || Colors.Blurple)
-      .setThumbnail(member.user.displayAvatarURL())
-      .setFooter({ text: `ID: ${member.id}` })
+      .setTitle(`${user.username}'s Information`)
+      .setDescription(`Information about ${user.toString()}`)
+      .setColor(member ? member.displayColor : Colors.Blurple)
+      .setThumbnail(user.displayAvatarURL())
+      .setFooter({ text: `ID: ${user.id}` })
       
-    if (member.nickname) embed.addFields({ name: "Nickname", value: member.nickname || "None", inline: true });
+    if (member && member.nickname) embed.addFields({ name: "Nickname", value: member.nickname, inline: true });
+
+    if (member) {
+      embed.addFields(
+        { name: "Joined Server", value: member.joinedTimestamp ? `<t:${Math.round(member.joinedTimestamp / 1000)}:f>` : "Unknown", inline: true },
+      )
+    }
 
     embed.addFields(
-      { name: "Joined Server", value: `<t:${Math.round(member.joinedTimestamp / 1000)}:f>` || "Unknown", inline: true },
-      { name: "Joined Discord", value: `<t:${Math.round(member.user.createdTimestamp / 1000)}:f>`, inline: true },
-      { name: "Roles", value: member.roles.cache.filter((role) => role.id != interaction.guildId).map((role) => role.toString()).join(" ") || "None", inline: false },
+      { name: "Joined Discord", value: `<t:${Math.round(user.createdTimestamp / 1000)}:f>`, inline: true },
     );
+
+    if (member) {
+      embed.addFields(
+        { name: "Roles", value: member.roles.cache.filter((role) => role.id != interaction.guildId).map((role) => role.toString()).join(" ") || "None", inline: false },
+      )
+    }
 
     return interaction.reply({ embeds: [embed] });
 

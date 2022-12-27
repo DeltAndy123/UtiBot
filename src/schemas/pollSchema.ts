@@ -20,10 +20,7 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  guildId: {
-    type: String,
-    required: true,
-  },
+  guildId: String,
 });
 
 export default mongoose.model('polls', schema, 'polls');

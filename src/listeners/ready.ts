@@ -27,6 +27,7 @@ export class ReadyListener extends Listener {
     // Fetch all poll messages from the database
     pollSchema.find().then((polls) => {
       polls.forEach(async (poll) => {
+        if (!poll.guildId || !poll.channelId || !poll.messageId) return;
         const guild = client.guilds.cache.get(poll.guildId);
         if (!guild) return;
         const channel = guild.channels.cache.get(poll.channelId);

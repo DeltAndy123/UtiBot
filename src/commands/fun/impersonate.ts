@@ -1,4 +1,4 @@
-import { Command, ChatInputCommand } from '@sapphire/framework';
+import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from '@sapphire/framework';
 import { Colors, EmbedBuilder, PermissionFlagsBits, Webhook } from 'discord.js';
 import loggerSettingsSchema from '@schemas/loggerSettingsSchema';
 
@@ -8,6 +8,7 @@ export class ImpersonateCommand extends Command {
       ...options,
       requiredUserPermissions: ['ManageWebhooks'],
       requiredClientPermissions: ['ManageWebhooks'],
+      runIn: CommandOptionsRunTypeEnum.GuildAny,
     });
   }
 

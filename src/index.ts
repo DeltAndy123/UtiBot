@@ -2,7 +2,7 @@ import { SapphireClient } from '@sapphire/framework';
 import 'module-alias/register';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
-import { GatewayIntentBits } from 'discord.js';
+import { GatewayIntentBits, Partials } from 'discord.js';
 import http from 'http';
 
 dotenv.config();
@@ -17,6 +17,9 @@ const client = new SapphireClient({
     GatewayIntentBits.DirectMessages,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildInvites,
+  ],
+  partials: [
+    Partials.Channel,
   ]
 });
 

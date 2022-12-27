@@ -1,5 +1,5 @@
-import { Command, ChatInputCommand } from '@sapphire/framework';
-import { ChannelType, DiscordAPIError, Message, PermissionFlagsBits, TextChannel } from 'discord.js';
+import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from '@sapphire/framework';
+import { ChannelType, Collection, DiscordAPIError, Message, PermissionFlagsBits, TextChannel } from 'discord.js';
 
 export class ClearCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -7,6 +7,7 @@ export class ClearCommand extends Command {
       ...options,
       requiredUserPermissions: ['ManageMessages'],
       requiredClientPermissions: ['ManageMessages'],
+      runIn: CommandOptionsRunTypeEnum.GuildAny,
     });
   }
 
@@ -107,7 +108,7 @@ export class ClearCommand extends Command {
       }
     } else {
       if (!slow) {
-        deleteChannel.messages.fetch({ limit: clearAmountInt }).then((msgs: any) => {
+        deleteChannel.messages.fetch({ limit: clearAmountInt }).then((msgs: Collection<string, Message<true>>) => {
           deleteChannel.bulkDelete(msgs)
             .then(() => {
               if (interaction) {

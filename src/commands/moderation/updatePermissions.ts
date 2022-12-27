@@ -7,7 +7,7 @@ export class UpdatePermissionsCommand extends Command {
       ...options,
       requiredUserPermissions: ['ManageRoles'],
       requiredClientPermissions: ['ManageRoles'],
-      runIn: CommandOptionsRunTypeEnum.GuildText,
+      runIn: CommandOptionsRunTypeEnum.GuildAny,
     });
   }
 
