@@ -46,6 +46,7 @@ export class PollEmbedRemovedListener extends Listener {
     const collector = reply.createMessageComponentCollector({ time: 60 * 1000 });
 
     collector.on('collect', async (interaction) => {
+      if (interaction.message.author.id !== container.client.user?.id) return;
       if (interaction.user.id !== poll.author) {
         interaction.reply({ content: 'You are not the creator of this poll', ephemeral: true });
         return;

@@ -22,6 +22,7 @@ export class PollVotedListener extends Listener {
 
     if (!interaction.isButton()) return;
     if (!interaction.customId.startsWith('poll')) return;
+    if (interaction.message.author.id !== this.container.client.user?.id) return;
 
     const message = interaction.message.embeds.length ? interaction.message : (await interaction.channel?.messages.fetch(interaction.message.reference?.messageId!))!;
     const buttonId = interaction.customId.split('-')[1];
