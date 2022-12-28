@@ -13,6 +13,7 @@ export class LoggerDeleteListener extends Listener {
 
     if (message.author.bot) return;
     if (message.channel.isDMBased()) return;
+    if (message.content === '') return;
 
     const data: any = await loggerSettingsSchema.findOne({
       _id: message.guildId,
