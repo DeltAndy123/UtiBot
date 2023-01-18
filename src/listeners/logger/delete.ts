@@ -1,6 +1,7 @@
 import { Listener, Events } from '@sapphire/framework';
 import { Message, EmbedBuilder, Colors, GuildTextBasedChannel } from 'discord.js';
 import loggerSettingsSchema from '@schemas/loggerSettingsSchema';
+import { EmbedFieldMax } from '@util/consts';
 
 export class LoggerDeleteListener extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {
@@ -29,7 +30,10 @@ export class LoggerDeleteListener extends Listener {
     var logDelete = false
     
     if (message.mentions.members?.size || message.mentions.roles?.size) {
-      if (data.events.ghostPing){
+      if (data.events.ghostPing) {
+        var embedMsg = message.content
+        if (embedMsg.length > EmbedFieldMax) embedMsg = embedMsg.slice(0, EmbedFieldMax - 3) + '...'
+
         const embed = new EmbedBuilder()
           .setTitle('Ghost Ping')
           .setColor(Colors.Red)
@@ -37,7 +41,7 @@ export class LoggerDeleteListener extends Listener {
           .addFields(
             {
               name: 'Message',
-              value: message.content,
+              value: embedMsg,
             }
           )
 
@@ -65,6 +69,9 @@ export class LoggerDeleteListener extends Listener {
     } else if (data.events.messageDelete) logDelete = true
 
     if (logDelete) {
+      var embedMsg = message.content
+      if (embedMsg.length > EmbedFieldMax) embedMsg = embedMsg.slice(0, EmbedFieldMax - 3) + '...'
+
       const embed = new EmbedBuilder()
         .setTitle('Message Delete')
         .setColor(Colors.LightGrey)
@@ -72,7 +79,7 @@ export class LoggerDeleteListener extends Listener {
         .addFields(
           {
             name: 'Message',
-            value: message.content,
+            value: embedMsg,
           }
         )
 

@@ -1,0 +1,1 @@
+export const EmbedFieldMax = 1024

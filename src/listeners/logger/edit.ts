@@ -1,6 +1,7 @@
 import { Listener, Events } from '@sapphire/framework';
 import { Message, EmbedBuilder, Colors, GuildTextBasedChannel } from 'discord.js';
 import loggerSettingsSchema from '@schemas/loggerSettingsSchema';
+import { EmbedFieldMax } from '@util/consts';
 
 export class LoggerEditListener extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {
@@ -39,7 +40,12 @@ export class LoggerEditListener extends Listener {
     }
     
     if (ghostPing) {
-      if (data.events.ghostPing){
+      if (data.events.ghostPing) {
+        var embedOldMsg = oldMessage.content
+        var embedNewMsg = newMessage.content
+        if (embedOldMsg.length > EmbedFieldMax) embedOldMsg = embedOldMsg.slice(0, EmbedFieldMax - 3) + '...'
+        if (embedNewMsg.length > EmbedFieldMax) embedNewMsg = embedNewMsg.slice(0, EmbedFieldMax - 3) + '...'
+
         const embed = new EmbedBuilder()
           .setTitle('Ghost Ping')
           .setColor(Colors.Red)
@@ -51,11 +57,11 @@ export class LoggerEditListener extends Listener {
             },
             {
               name: 'Message Before',
-              value: oldMessage.content,
+              value: embedOldMsg,
             },
             {
               name: 'New Message',
-              value: newMessage.content,
+              value: embedNewMsg,
             }
           )
 
@@ -83,6 +89,11 @@ export class LoggerEditListener extends Listener {
     } else if (data.events.messageEdit) logEdit = true
 
     if (logEdit) {
+      var embedOldMsg = oldMessage.content
+      var embedNewMsg = newMessage.content
+      if (embedOldMsg.length > EmbedFieldMax) embedOldMsg = embedOldMsg.slice(0, EmbedFieldMax - 3) + '...'
+      if (embedNewMsg.length > EmbedFieldMax) embedNewMsg = embedNewMsg.slice(0, EmbedFieldMax - 3) + '...'
+
       const embed = new EmbedBuilder()
         .setTitle('Message Edit')
         .setColor(Colors.LightGrey)
@@ -94,11 +105,11 @@ export class LoggerEditListener extends Listener {
           },
           {
             name: 'Message Before',
-            value: oldMessage.content,
+            value: embedOldMsg,
           },
           {
             name: 'New Message',
-            value: oldMessage.reactions.message.content,
+            value: embedNewMsg,
           }
         )
 
