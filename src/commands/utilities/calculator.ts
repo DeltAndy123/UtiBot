@@ -6,6 +6,7 @@ export class CalulatorCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
+      preconditions: ['CheckOverride']
     });
   }
 
@@ -25,6 +26,8 @@ export class CalulatorCommand extends Command {
             .setName('precision')
             .setDescription('Precision of the calculator (Default: 14)')
             .setRequired(false)
+            .setMaxValue(14)
+            .setMinValue(1)
         )
     );
   }
@@ -48,9 +51,6 @@ export class CalulatorCommand extends Command {
      */
 
     const precision = interaction.options.getInteger("precision")
-
-    if (precision && precision < 1) return interaction.reply("Precision can not be less than 1!")
-    if (precision && precision > 14) return interaction.reply("Precision can not be more than 14!")
 
     var calculations: any[] = [];
     var previousCalc = "";

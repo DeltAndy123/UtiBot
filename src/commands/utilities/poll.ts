@@ -3,13 +3,14 @@ import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from "@sapphire/
 import { ButtonStyle, PermissionFlagsBits } from "discord.js";
 import pollSchema from "@schemas/pollSchema";
 
-export class CmdNameCommand extends Command {
+export class PollCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
       requiredUserPermissions: ["ManageGuild"],
       requiredClientPermissions: ["SendMessages"],
       runIn: CommandOptionsRunTypeEnum.GuildAny,
+      preconditions: ['CheckOverride'],
     });
   }
 

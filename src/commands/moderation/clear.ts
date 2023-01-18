@@ -8,6 +8,7 @@ export class ClearCommand extends Command {
       requiredUserPermissions: ['ManageMessages'],
       requiredClientPermissions: ['ManageMessages'],
       runIn: CommandOptionsRunTypeEnum.GuildAny,
+      preconditions: ['CheckOverride'],
     });
   }
 

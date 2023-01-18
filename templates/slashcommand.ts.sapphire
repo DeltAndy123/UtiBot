@@ -1,0 +1,39 @@
+{ "category": "commands" }
+---
+import { Command, ChatInputCommand } from '@sapphire/framework';
+
+@ApplyOptions<Command.Options>({
+  description: 'A command'
+})
+export class {{name}}Command extends Command {
+  public constructor(context: Command.Context, options: Command.Options) {
+    super(context, {
+      ...options,
+      requiredUserPermissions: ['SendMessages'],
+      requiredClientPermissions: ['SendMessages'],
+      preconditions: ['CheckOverride'],
+    });
+  }
+
+  public override registerApplicationCommands(
+    registry: ChatInputCommand.Registry
+  ) {
+    registry.registerChatInputCommand(
+      (builder) =>
+        builder
+          .setName(this.name)
+          .setDescription(this.description)
+          .addStringOption((option) =>
+            option
+              .setName('optionname')
+              .setDescription('option description')
+              .setRequired(true)
+          ),
+      // { guildIds: [ 'TESTID' ] },
+    );
+  }
+
+  public chatInputRun(interaction: Command.ChatInputCommandInteraction) {
+    // Your code here
+  }
+}

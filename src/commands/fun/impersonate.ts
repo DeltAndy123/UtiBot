@@ -9,6 +9,7 @@ export class ImpersonateCommand extends Command {
       requiredUserPermissions: ['ManageWebhooks'],
       requiredClientPermissions: ['ManageWebhooks'],
       runIn: CommandOptionsRunTypeEnum.GuildAny,
+      preconditions: ['CheckOverride'],
     });
   }
 

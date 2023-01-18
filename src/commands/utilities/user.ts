@@ -7,6 +7,7 @@ export class UserCommand extends Command {
     super(context, {
       ...options,
       requiredClientPermissions: ["ManageGuild"],
+      preconditions: ['CheckOverride'],
     });
   }
 
@@ -37,7 +38,7 @@ export class UserCommand extends Command {
     const embed = new EmbedBuilder()
       .setTitle(`${user.username}'s Information`)
       .setDescription(`Information about ${user.toString()}`)
-      .setColor(member ? member.displayColor : Colors.Blurple)
+      .setColor((member && member.displayColor) ? member.displayColor : Colors.Blurple)
       .setThumbnail(user.displayAvatarURL())
       .setFooter({ text: `ID: ${user.id}` })
       

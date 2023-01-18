@@ -8,6 +8,7 @@ export class UpdatePermissionsCommand extends Command {
       requiredUserPermissions: ['ManageRoles'],
       requiredClientPermissions: ['ManageRoles'],
       runIn: CommandOptionsRunTypeEnum.GuildAny,
+      preconditions: ['CheckOverride'],
     });
   }
 

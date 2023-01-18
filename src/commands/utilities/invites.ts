@@ -20,6 +20,7 @@ export class InvitesCommand extends Subcommand {
         },
       ],
       runIn: CommandOptionsRunTypeEnum.GuildAny,
+      preconditions: ['CheckOverride']
     });
   }
 

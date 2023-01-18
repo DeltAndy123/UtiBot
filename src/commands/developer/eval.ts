@@ -4,7 +4,7 @@ export class EvalCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
-      preconditions: ['OwnerOnly'],
+      preconditions: ['OwnerOnly', 'CheckOverride'],
     });
   }
 

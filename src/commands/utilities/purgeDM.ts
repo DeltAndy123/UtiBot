@@ -1,11 +1,12 @@
 import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from "@sapphire/framework";
 import { ChannelType } from "discord.js";
 
-export class CmdNameCommand extends Command {
+export class PurgeDMCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
       runIn: CommandOptionsRunTypeEnum.Dm,
+      preconditions: ['CheckOverride'],
     });
   }
 

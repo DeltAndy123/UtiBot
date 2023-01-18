@@ -9,6 +9,7 @@ export class LoggerSettingsCommand extends Command {
       ...options,
       requiredUserPermissions: ['ManageGuild'],
       runIn: CommandOptionsRunTypeEnum.GuildAny,
+      preconditions: ['CheckOverride'],
     });
   }
 

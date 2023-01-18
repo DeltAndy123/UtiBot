@@ -1,0 +1,29 @@
+{ "category": "preconditions" }
+---
+import { Precondition } from '@sapphire/framework';
+import type { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message } from 'discord.js';
+
+export class UserPrecondition extends Precondition {
+	public override messageRun(message: Message, context: Precondition.Context) {
+		return this.check(message)
+	}
+
+	public override chatInputRun(interaction: ChatInputCommandInteraction, command: ChatInputCommand, context: Precondition.Context) {
+		return this.check(interaction)
+	}
+
+	public override contextMenuRun(interaction: ContextMenuCommandInteraction, command: ContextMenuCommand, context: Precondition.Context) {
+		return this.check(interaction)
+	}
+
+	private check({ guild }: ChatInputCommandInteraction | ContextMenuCommandInteraction | Message) {
+
+		return this.ok()
+	}
+}
+
+declare module '@sapphire/framework' {
+	interface Preconditions {
+		CheckOverride: never;
+	}
+}
