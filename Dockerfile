@@ -1,11 +1,18 @@
-FROM node:18.12.1
+FROM alpine
 
-WORKDIR /app
+RUN apk update
+RUN apk add nodejs
+RUN apk add npm
 
-COPY . .
+RUN mkdir /root/app
 
-RUN npm install && npm run build
+WORKDIR /root/app
+
+COPY * /root/app
+
+RUN npm install
 
 EXPOSE 3000
 
-CMD ["npm", "start"]
+RUN npm run build
+CMD npm start
