@@ -1,6 +1,10 @@
 import { Command, ChatInputCommand } from '@sapphire/framework';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
-import { evaluate, format } from "mathjs";
+import { evaluate } from "mathjs";
+
+function format(num: number, precision: number) {
+  return (Math.round(num * Math.pow(10, precision)) / Math.pow(10,precision)).toString()
+}
 
 export class CalulatorCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -525,7 +529,7 @@ export class CalulatorCommand extends Command {
           // Calculate
           try {
             calculations = [];
-            var result = format(evaluate(calculation), { precision: interaction.options.getInteger("precision") || 14 });
+            var result = format(evaluate(calculation), interaction.options.getInteger("precision") || 14);
             switch (calculation) {
               case "0/0":
                 result = "ERROR_ZERO_DIVIDED_BY_ZERO";
