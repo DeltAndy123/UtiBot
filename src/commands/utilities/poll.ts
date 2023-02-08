@@ -28,66 +28,77 @@ export class PollCommand extends Command {
               .setName("question")
               .setDescription("The question to ask")
               .setRequired(true)
+              .setMaxLength(256)
           )
           .addStringOption((option) =>
             option
               .setName("option1")
               .setDescription("The first option")
               .setRequired(true)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option2")
               .setDescription("The second option")
               .setRequired(true)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option3")
               .setDescription("The third option")
               .setRequired(false)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option4")
               .setDescription("The fourth option")
               .setRequired(false)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option5")
               .setDescription("The fifth option")
               .setRequired(false)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option6")
               .setDescription("The sixth option")
               .setRequired(false)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option7")
               .setDescription("The seventh option")
               .setRequired(false)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option8")
               .setDescription("The eighth option")
               .setRequired(false)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option9")
               .setDescription("The ninth option")
               .setRequired(false)
+              .setMaxLength(100)
           )
           .addStringOption((option) =>
             option
               .setName("option10")
               .setDescription("The tenth option")
               .setRequired(false)
+              .setMaxLength(100)
           ),
     );
   }
@@ -119,11 +130,15 @@ export class PollCommand extends Command {
     components.push(
       new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
-          options.slice(0,5).filter((option) => option).map((option, index) => new ButtonBuilder()
-            .setCustomId(`poll-${index + 1}`)
-            .setLabel(option!)
-            .setStyle(ButtonStyle.Primary)
-          )
+          options.slice(0, 5).filter((option) => option).map((option, index) => {
+            if (option?.length! > 80) {
+              option = option?.slice(0, -50) + '...' || null
+            }
+            return new ButtonBuilder()
+              .setCustomId(`poll-${index + 1}`)
+              .setLabel(option!)
+              .setStyle(ButtonStyle.Primary)
+          })
         )
     );
 
@@ -131,11 +146,15 @@ export class PollCommand extends Command {
       components.push(
         new ActionRowBuilder<ButtonBuilder>()
           .addComponents(
-            options.slice(5,10).filter((option) => option).map((option, index) => new ButtonBuilder()
-              .setCustomId(`poll-${index + 6}`)
-              .setLabel(option!)
-              .setStyle(ButtonStyle.Primary)
-            )
+            options.slice(5, 10).filter((option) => option).map((option, index) => {
+              if (option?.length! > 80) {
+                option = option?.slice(0, -50) + '...' || null
+              }
+              return new ButtonBuilder()
+                .setCustomId(`poll-${index + 6}`)
+                .setLabel(option!)
+                .setStyle(ButtonStyle.Primary)
+            })
           )
       );
     }
