@@ -153,12 +153,12 @@ export class InvitesCommand extends Subcommand {
       .addFields(
         {
           name: "Uses",
-          value: `${invite.uses || 'N/A'}`,
+          value: `${invite.uses || '0'}`,
           inline: true,
         },
         {
           name: "Max uses",
-          value: `${invite.maxUses || 'N/A'}`,
+          value: `${invite.maxUses || 'Unlimited'}`,
           inline: true,
         },
         {
@@ -168,17 +168,17 @@ export class InvitesCommand extends Subcommand {
         },
         {
           name: "Created",
-          value: `${invite.createdTimestamp ? `<t:${Math.round(invite.createdTimestamp / 1000)}:f>` : 'N/A'}`,
+          value: `${invite.createdTimestamp ? `<t:${Math.round(invite.createdTimestamp / 1000)}:f>` : 'Unknown'}`,
           inline: true,
         },
         {
           name: "Expires",
-          value: `${invite.expiresTimestamp ? `<t:${Math.round(invite.expiresTimestamp / 1000)}:f>` : 'N/A'}`,
+          value: `${invite.expiresTimestamp ? `<t:${Math.round(invite.expiresTimestamp / 1000)}:f>` : 'Never'}`,
           inline: true,
         },
         {
           name: "Created by",
-          value: `${inviterMember || inviter || 'N/A'}`,
+          value: `${inviterMember || inviter || 'Unknown'}`,
           inline: true,
         }
       );
