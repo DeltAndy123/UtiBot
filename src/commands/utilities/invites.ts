@@ -20,7 +20,7 @@ export class InvitesCommand extends Subcommand {
         },
       ],
       runIn: CommandOptionsRunTypeEnum.GuildAny,
-      preconditions: ['CheckOverride']
+      preconditions: ['CheckOverride', 'GuildOnly']
     });
   }
 
@@ -57,13 +57,12 @@ export class InvitesCommand extends Subcommand {
     );
   }
 
-  public async list(interaction: Subcommand.ChatInputInteraction) {
-    
-    var invites: Collection<string, Invite> = await interaction.guild.invites.fetch();
-    const member: GuildMember = interaction.options.getMember("member");
+  public async list(interaction: Subcommand.ChatInputCommandInteraction) {
+    if (!interaction.inCachedGuild()) return interaction.reply('Invalid guild')
+    var invites: Collection<string, Invite> = await interaction.guild!.invites.fetch();
+    const member = interaction.options.getMember("member");
     var currentPage = 1;
     const perPage = 5;
-
     if (member) {
       invites = invites.filter((invite: Invite) => invite.inviter && invite.inviter.id === member.user.id);
     }
@@ -80,7 +79,7 @@ export class InvitesCommand extends Subcommand {
       if (invites.size > perPage) {
         embed.setFooter({ text: `Page ${page} of ${Math.ceil(invites.size / perPage)}` })
         components.push(
-          new ActionRowBuilder()
+          new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
               new ButtonBuilder()
                 .setCustomId("invites_list_previous")
@@ -101,7 +100,7 @@ export class InvitesCommand extends Subcommand {
         if (i >= (page - 1) * perPage && i < page * perPage) {
           embed.addFields({
             name: invite.code,
-            value: `Uses: ${invite.uses}\nMax uses: ${invite.maxUses}\nChannel: ${invite.channel}\nCreated: ${invite.createdTimestamp ? `<t:${Math.round(invite.createdTimestamp / 1000)}:f>` : 'N/A'}\nExpires: ${invite.expiresTimestamp ? `<t:${Math.round(invite.expiresTimestamp / 1000)}:f>` : 'N/A'}${!member ? `\nCreated by: ${invite.inviter}` : ""}`,
+            value: `Uses: ${invite.uses}\nMax uses: ${invite.maxUses}\nChannel: ${invite.channel}\nCreated: ${invite.createdTimestamp ? `<t:${Math.round(invite.createdTimestamp / 1000)}:f>` : 'Unknown'}\nExpires: ${invite.expiresTimestamp ? `<t:${Math.round(invite.expiresTimestamp / 1000)}:f>` : 'Never'}${!member ? `\nCreated by: ${invite.inviter}` : ""}`,
           });
         }
         i++;
@@ -134,17 +133,17 @@ export class InvitesCommand extends Subcommand {
 
   }
 
-  public info(interaction: Subcommand.ChatInputInteraction) {
-    
+  public info(interaction: Subcommand.ChatInputCommandInteraction) {
+    if (!interaction.inCachedGuild()) return interaction.reply('Invalid guild')
     const code = interaction.options.getString("invite");
-    const invite: Invite = interaction.guild.invites.cache.find((invite: Invite) => invite.code === code);
+    const invite: Invite | undefined = interaction.guild.invites.cache.find((invite: Invite) => invite.code === code);
 
     if (!invite) {
       return interaction.reply({ content: "Invite not found", ephemeral: true });
     }
 
     const { inviter }: { inviter: User | null } = invite;
-    const inviterMember: GuildMember | null = inviter ? interaction.guild.members.cache.get(inviter.id) : null;
+    const inviterMember: GuildMember | undefined | null = inviter ? interaction.guild.members.cache.get(inviter.id) : null;
 
     const embed = new EmbedBuilder()
       .setTitle("Invite Info")

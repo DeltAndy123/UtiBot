@@ -63,12 +63,14 @@ export class CommandsCommand extends Subcommand {
     );
   }
 
-  public async list(interaction: Subcommand.ChatInputInteraction) {
+  public async list(interaction: Subcommand.ChatInputCommandInteraction) {
 
     var commands: ApplicationCommand[] = [];
-    
-    if (interaction.options.getString('guild')) {
-      await this.container.client.guilds.cache.get(interaction.options.getString('guild'))?.commands.fetch().then((cmds) => {
+    const guildId = interaction.options.getString('guild')
+    if (guildId) {
+      const guild = this.container.client.guilds.cache.get(guildId)
+      if (!guild) return interaction.reply('Unknown guild')
+      await guild.commands.fetch().then((cmds) => {
         cmds.forEach((cmd) => {
           commands.push(cmd);
         });
@@ -102,14 +104,19 @@ export class CommandsCommand extends Subcommand {
     interaction.reply({ embeds: [embed] });
   }
 
-  public async delete(interaction: Subcommand.ChatInputInteraction) {
-
-    if (interaction.options.getString('guild')) {
-      await this.container.client.guilds.cache.get(interaction.options.getString('guild'))?.commands.delete(interaction.options.getString('command'));
+  public async delete(interaction: Subcommand.ChatInputCommandInteraction) {
+    const command = interaction.options.getString('command')
+    const guildId = interaction.options.getString('guild')
+    if (guildId) {
+      const guild = this.container.client.guilds.cache.get(guildId)
+      if (!guild) return interaction.reply('Unknown guild')
+      if (!guild.commands.fetch(command!)) return interaction.reply('Unknown command')
+      await guild.commands.delete(command!);
       interaction.reply({ content: `Deleted guild command \`${interaction.options.getString('command')}\` in guild ${interaction.options.getString('guild')}` });
       console.log(`Deleted guild command ${interaction.options.getString('command')} in guild ${interaction.options.getString('guild')}`);
     } else {
-      await this.container.client.application?.commands.delete(interaction.options.getString('command'));
+      if (!this.container.client.application?.commands.fetch(command!)) return interaction.reply('Unknown command')
+      await this.container.client.application?.commands.delete(command!);
       interaction.reply({ content: `Deleted global command \`${interaction.options.getString('command')}\`` });
       console.log(`Deleted global command ${interaction.options.getString('command')}`);
     }
