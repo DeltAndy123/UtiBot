@@ -1,5 +1,5 @@
 import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from '@sapphire/framework';
-import { Colors, EmbedBuilder, PermissionFlagsBits, Webhook } from 'discord.js';
+import { Channel, ChannelType, Colors, DMChannel, EmbedBuilder, Guild, PermissionFlagsBits, TextChannel, Webhook } from 'discord.js';
 import loggerSettingsSchema from '@schemas/loggerSettingsSchema';
 
 export class ImpersonateCommand extends Command {
@@ -36,13 +36,25 @@ export class ImpersonateCommand extends Command {
 
   public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
 
-    const { channel, guild }: any = interaction;
+    var { channel, guild }: {
+      channel: Channel | null,
+      guild: Guild | null
+    } = interaction;
+    if (!channel) return;
+    if (channel.type == ChannelType.DM
+      || channel.type == ChannelType.GuildVoice
+      || channel.type == ChannelType.GuildStageVoice) return;
+    if (channel.isThread()) {
+      if (!channel.parent) return;
+      channel = channel.parent;
+    }
+    if (!guild) return;
 
     const user = interaction.options.getUser('user', true);
     const message = interaction.options.getString('message', true);
 
-    const webhook: Webhook = await channel!.createWebhook({
-      name: guild.members.cache.get(user.id).displayName,
+    const webhook: Webhook = await channel.createWebhook({
+      name: guild.members.cache.get(user.id)!.displayName,
       avatar: user.displayAvatarURL(),
     });
 
@@ -57,7 +69,7 @@ export class ImpersonateCommand extends Command {
     });
 
     if (data?.enabled === true && data?.channel && data?.events?.impersonateUsed) {
-      const channel = guild.channels.cache.get(data.channel);
+      const channel = guild.channels.cache.get(data.channel) as TextChannel;
       if (channel) {
         const embed = new EmbedBuilder()
           .setTitle('Impersonate Command')

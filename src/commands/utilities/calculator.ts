@@ -284,16 +284,16 @@ export class CalulatorCommand extends Command {
 
     // Send initial message
     await interaction.reply(updateCalculator());
-    const interactionReply: any = await interaction.fetchReply();
+    const interactionReply = await interaction.fetchReply();
 
     // Listen for button clicks
-    const filter = (i: any) => i.user.id === i.message.interaction?.user.id;
+    const collector = interactionReply.createMessageComponentCollector();
 
-    const collector = interactionReply.createMessageComponentCollector({
-      filter,
-    });
-
-    collector.on("collect", async (i: any) => {
+    collector.on("collect", async (i) => {
+      if (i.user.id !== interaction.user.id) {
+        i.reply({ content: "This is not your calculator", ephemeral: true });
+        return;
+      }
       // If the calculation is message=true, then clear the calculations array
       if (calculations[0]?.message) {
         if (i.customId !== "second") {
