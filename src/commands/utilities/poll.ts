@@ -1,6 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, EmbedBuilder } from "@discordjs/builders";
 import { Command, ChatInputCommand, CommandOptionsRunTypeEnum } from "@sapphire/framework";
-import { ButtonStyle, PermissionFlagsBits } from "discord.js";
+import { ButtonStyle, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, EmbedBuilder } from "discord.js";
 import pollSchema from "@schemas/pollSchema";
 
 export class PollCommand extends Command {

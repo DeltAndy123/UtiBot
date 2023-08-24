@@ -1,6 +1,5 @@
-import { EmbedBuilder } from "@discordjs/builders";
 import { Command, ChatInputCommand } from "@sapphire/framework";
-import { Colors, GuildMember, User } from "discord.js";
+import { Colors, GuildMember, User, EmbedBuilder } from "discord.js";
 
 export class UserCommand extends Command {
   public constructor(context: Command.Context, options: Command.Options) {

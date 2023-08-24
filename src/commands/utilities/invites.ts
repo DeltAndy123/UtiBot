@@ -1,7 +1,6 @@
-import { EmbedBuilder } from "@discordjs/builders";
 import { ChatInputCommand, CommandOptionsRunTypeEnum } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Collection, Colors, GuildMember, InteractionCollector, Invite, Message, PermissionFlagsBits, User } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Collection, Colors, GuildMember, EmbedBuilder, Invite, Message, PermissionFlagsBits, User } from "discord.js";
 
 export class InvitesCommand extends Subcommand {
   public constructor(context: Subcommand.Context, options: Subcommand.Options) {

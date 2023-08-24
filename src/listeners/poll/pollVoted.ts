@@ -1,7 +1,6 @@
 import { Listener, Events } from '@sapphire/framework';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Interaction, User } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Interaction, EmbedBuilder } from 'discord.js';
 import pollSchema from '@schemas/pollSchema';
-import { EmbedBuilder } from '@discordjs/builders';
 
 const removeRow = new ActionRowBuilder<ButtonBuilder>()
   .addComponents(

@@ -1,9 +1,8 @@
-import { EmbedBuilder } from '@discordjs/builders';
 import { ChatInputCommand, CommandStore, container } from '@sapphire/framework';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import envArray from '@util/env-array';
 import cmdOverrideSchema from '@schemas/cmdOverrideSchema';
-import { ChatInputCommandInteraction, Colors } from 'discord.js';
+import { ChatInputCommandInteraction, Colors, EmbedBuilder } from 'discord.js';
 
 const cannotDisable = [
   'cmdoverride'

@@ -1,8 +1,7 @@
-import { EmbedBuilder } from "@discordjs/builders";
 import { ChatInputCommand } from "@sapphire/framework";
 import { Subcommand } from "@sapphire/plugin-subcommands";
 import envArray from "@util/env-array";
-import { ApplicationCommand } from "discord.js";
+import { ApplicationCommand, EmbedBuilder } from "discord.js";
 
 export class CommandsCommand extends Subcommand {
   public constructor(context: Subcommand.Context, options: Subcommand.Options) {
