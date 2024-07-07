@@ -10,6 +10,18 @@ import { Tabs, calculatorLayout } from "@util/calculator-config";
 import sendError from "@util/sendError";
 import {AnyMathNode} from "../../types";
 
+interface calcState {
+  expression: {
+    display: string;
+    value: string;
+  }[];
+  tab: Tabs;
+  result: string;
+  clearOnType: boolean;
+  cursorPosition: number;
+  precision: number | null;
+}
+
 const calculatorTabs = Object.keys(Tabs).filter((key) => isNaN(Number(key)));
 
 function colorizeExpression(expression: string) {
@@ -52,22 +64,6 @@ function colorizeExpression(expression: string) {
 
 export class CalculatorCommand extends Command {
   private precision: number | null = null;
-  private calcState: {
-    expression: {
-      display: string;
-      value: string;
-    }[];
-    tab: Tabs;
-    result: string;
-    clearOnType: boolean;
-    cursorPosition: number;
-  } = {
-    expression: [],
-    tab: Tabs.Main,
-    result: "",
-    clearOnType: false,
-    cursorPosition: 0,
-  };
 
   public constructor(context: Command.LoaderContext, options: Command.Options) {
     super(context, { ...options });
@@ -113,12 +109,12 @@ export class CalculatorCommand extends Command {
     return hasZeroDivZero(parsedExpression);
   }
 
-  private calculate() {
-    const displayExpression = this.calcState.expression
+  private calculate(calcState: calcState) {
+    const displayExpression = calcState.expression
       .map(({ display }) => display)
       .join("");
     let evalExpression =
-      this.calcState.expression.map(({ value }) => value).join("") || "0";
+        calcState.expression.map(({ value }) => value).join("") || "0";
     const openParenLen = (evalExpression.match(/\(/g) || []).length;
     const closeParenLen = (evalExpression.match(/\)/g) || []).length;
     if (openParenLen > closeParenLen) {
@@ -131,17 +127,17 @@ export class CalculatorCommand extends Command {
       ).toString();
       switch (result) {
         case "Infinity":
-          this.calcState.expression = [
+          calcState.expression = [
             {
               display: "∞",
               value: "Infinity",
             },
           ];
-          this.calcState.cursorPosition = 1;
+          calcState.cursorPosition = 1;
           result = "∞";
           break;
         case "-Infinity":
-          this.calcState.expression = [
+          calcState.expression = [
             {
               display: "-",
               value: "-",
@@ -151,55 +147,55 @@ export class CalculatorCommand extends Command {
               value: "Infinity",
             },
           ];
-          this.calcState.cursorPosition = 2;
+          calcState.cursorPosition = 2;
           result = "-∞";
           break;
         case "NaN":
           if (this.isZeroDivZero(evalExpression)) {
-            this.calcState.expression = [
+            calcState.expression = [
               {
                 display:
                   "Imagine that you have zero cookies and you split them evenly among zero friends. How many cookies does each person get? See? It doesn’t make sense. And Cookie Monster is sad that there are no cookies, and you are sad that you have no friends.",
                 value: "",
               },
             ];
-            this.calcState.clearOnType = true;
-            this.calcState.cursorPosition = 0;
+            calcState.clearOnType = true;
+            calcState.cursorPosition = 0;
             result = "ERR_ZERO_DIV_ZERO";
           } else {
-            this.calcState.expression = [
+            calcState.expression = [
               {
                 display: "NaN",
                 value: "",
               },
             ];
-            this.calcState.clearOnType = true;
-            this.calcState.cursorPosition = 0;
+            calcState.clearOnType = true;
+            calcState.cursorPosition = 0;
             result = "NaN";
           }
           break;
         default:
-          this.calcState.expression = result.split("").map((char) => ({
+          calcState.expression = result.split("").map((char) => ({
             display: char,
             value:
-              calculatorLayout[this.calcState.tab].buttonRows
+              calculatorLayout[calcState.tab].buttonRows
                 .flat()
                 .find(({ textDisplay }) => textDisplay === char)
                 ?.calculation || "",
           }));
-          this.calcState.cursorPosition = this.calcState.expression.length;
+          calcState.cursorPosition = calcState.expression.length;
       }
-      this.calcState.result = `${displayExpression} = ${result}`;
+      calcState.result = `${displayExpression} = ${result}`;
     } catch (e) {
-      this.calcState.result = `${displayExpression} = Error`;
-      this.calcState.expression = [
+      calcState.result = `${displayExpression} = Error`;
+      calcState.expression = [
         {
           display: "Error",
           value: "",
         },
       ];
-      this.calcState.clearOnType = true;
-      this.calcState.cursorPosition = 0;
+      calcState.clearOnType = true;
+      calcState.cursorPosition = 0;
     }
   }
 
@@ -221,7 +217,14 @@ export class CalculatorCommand extends Command {
   }
 
   public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    this.precision = interaction.options.getNumber("precision");
+    const calcState: calcState = {
+      expression: [],
+      tab: Tabs.Main,
+      result: "",
+      clearOnType: false,
+      cursorPosition: 0,
+      precision: interaction.options.getNumber("precision"),
+    };
 
     const updateMessage = () => {
       // Main tab:
@@ -231,7 +234,7 @@ export class CalculatorCommand extends Command {
       // . 0 = +
       // (Tabs)
       const rows: ActionRowBuilder<ButtonBuilder>[] = [];
-      calculatorLayout[this.calcState.tab].buttonRows.forEach((row, i) => {
+      calculatorLayout[calcState.tab].buttonRows.forEach((row, i) => {
         const actionRow = new ActionRowBuilder<ButtonBuilder>();
         actionRow.addComponents(
           ...row.map(({ buttonDisplay, id, calculation, style }) =>
@@ -284,7 +287,7 @@ export class CalculatorCommand extends Command {
           .setCustomId(`calculator.tab.${tabName}`)
           .setLabel(tabName);
 
-        if (Tabs[this.calcState.tab] === tabName)
+        if (Tabs[calcState.tab] === tabName)
           button.setStyle(ButtonStyle.Success);
         else button.setStyle(ButtonStyle.Secondary);
 
@@ -294,14 +297,14 @@ export class CalculatorCommand extends Command {
 
       let content = "```ansi\n";
       if (this.precision) content = `**Precision: ${this.precision}**\n${content}`;
-      if (this.calcState.result) {
-        content += colorizeExpression(this.calcState.result) + "\n";
+      if (calcState.result) {
+        content += colorizeExpression(calcState.result) + "\n";
       }
-      this.calcState.expression.forEach(({ display }, i) => {
-        if (i === this.calcState.cursorPosition) content += "\u001b[1;34m‸\u001b[0m";
+      calcState.expression.forEach(({ display }, i) => {
+        if (i === calcState.cursorPosition) content += "\u001b[1;34m‸\u001b[0m";
         content += display;
       });
-      if (this.calcState.cursorPosition === this.calcState.expression.length)
+      if (calcState.cursorPosition === calcState.expression.length)
         content += "\u001b[1;34m‸\u001b[0m";
       content += "\n```";
 
@@ -326,51 +329,51 @@ export class CalculatorCommand extends Command {
       if (buttonID[0] !== "calculator") return sendError(buttonInt, "INVALID_BUTTON_ID")
       switch (buttonID[1]) {
         case "tab":
-          this.calcState.tab = Tabs[buttonID[2] as keyof typeof Tabs];
+          calcState.tab = Tabs[buttonID[2] as keyof typeof Tabs];
           break;
         case "cursor":
           const cursorID = buttonID[2];
           if (cursorID === "left") {
-            this.calcState.cursorPosition = Math.max(0, this.calcState.cursorPosition - 1);
+            calcState.cursorPosition = Math.max(0, calcState.cursorPosition - 1);
           } else if (cursorID === "right") {
-            this.calcState.cursorPosition = Math.min(
-              this.calcState.expression.length,
-              this.calcState.cursorPosition + 1
+            calcState.cursorPosition = Math.min(
+                calcState.expression.length,
+                calcState.cursorPosition + 1
             );
           } else {
-            this.calcState.cursorPosition = Number(cursorID);
+            calcState.cursorPosition = Number(cursorID);
           }
           break;
         case "backspace":
-          if (this.calcState.cursorPosition === 0) break;
-          this.calcState.cursorPosition--;
-          this.calcState.expression.splice(this.calcState.cursorPosition, 1);
+          if (calcState.cursorPosition === 0) break;
+          calcState.cursorPosition--;
+          calcState.expression.splice(calcState.cursorPosition, 1);
           break;
         case "clear":
-          this.calcState.expression = [];
-          this.calcState.cursorPosition = 0;
+          calcState.expression = [];
+          calcState.cursorPosition = 0;
           break;
         case "calculate":
-          this.calculate();
+          this.calculate(calcState);
           break;
         default:
-          const calculatorButton = calculatorLayout[this.calcState.tab].buttonRows
+          const calculatorButton = calculatorLayout[calcState.tab].buttonRows
             .flat()
             .find(({ id, calculation }) => id === buttonID[1] || calculation === buttonID[1]);
           if (!calculatorButton) return sendError(buttonInt, "BUTTON_NOT_FOUND", {
             shortID: buttonID[1],
             fullID: buttonInt.customId
           });
-          if (this.calcState.clearOnType) {
-            this.calcState.expression = [];
-            this.calcState.clearOnType = false;
-            this.calcState.cursorPosition = 0;
+          if (calcState.clearOnType) {
+            calcState.expression = [];
+            calcState.clearOnType = false;
+            calcState.cursorPosition = 0;
           }
-          this.calcState.expression.splice(this.calcState.cursorPosition, 0, {
+          calcState.expression.splice(calcState.cursorPosition, 0, {
             display: calculatorButton.textDisplay,
             value: calculatorButton.calculation,
           });
-          this.calcState.cursorPosition++;
+          calcState.cursorPosition++;
       }
       await buttonInt.update(updateMessage());
     });
