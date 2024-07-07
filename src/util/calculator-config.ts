@@ -6,7 +6,7 @@ interface CalculatorButton {
   buttonDisplay: string;
   textDisplay: string;
   calculation: string;
-  id: string;
+  id?: string;
   style?: ButtonStyle;
 }
 
@@ -15,6 +15,7 @@ type CalculatorTab = CalculatorButton[][];
 export enum Tabs {
   Main,
   Functions,
+  Constants,
 }
 
 type CalculatorLayout = {
@@ -31,28 +32,25 @@ export const calculatorLayout: CalculatorLayout = [
           buttonDisplay: "7",
           textDisplay: "7",
           calculation: "7",
-          id: "calculator.7",
           style: Primary,
         },
         {
           buttonDisplay: "8",
           textDisplay: "8",
           calculation: "8",
-          id: "calculator.8",
           style: Primary,
         },
         {
           buttonDisplay: "9",
           textDisplay: "9",
           calculation: "9",
-          id: "calculator.9",
           style: Primary,
         },
         {
           buttonDisplay: "÷",
           textDisplay: "÷",
           calculation: "/",
-          id: "calculator.divide",
+          id: "divide",
           style: Secondary,
         },
       ],
@@ -61,28 +59,25 @@ export const calculatorLayout: CalculatorLayout = [
           buttonDisplay: "4",
           textDisplay: "4",
           calculation: "4",
-          id: "calculator.4",
           style: Primary,
         },
         {
           buttonDisplay: "5",
           textDisplay: "5",
           calculation: "5",
-          id: "calculator.5",
           style: Primary,
         },
         {
           buttonDisplay: "6",
           textDisplay: "6",
           calculation: "6",
-          id: "calculator.6",
           style: Primary,
         },
         {
           buttonDisplay: "×",
           textDisplay: "×",
           calculation: "*",
-          id: "calculator.multiply",
+          id: "multiply",
           style: Secondary,
         },
       ],
@@ -91,28 +86,25 @@ export const calculatorLayout: CalculatorLayout = [
           buttonDisplay: "1",
           textDisplay: "1",
           calculation: "1",
-          id: "calculator.1",
           style: Primary,
         },
         {
           buttonDisplay: "2",
           textDisplay: "2",
           calculation: "2",
-          id: "calculator.2",
           style: Primary,
         },
         {
           buttonDisplay: "3",
           textDisplay: "3",
           calculation: "3",
-          id: "calculator.3",
           style: Primary,
         },
         {
           buttonDisplay: "−",
           textDisplay: "-",
           calculation: "-",
-          id: "calculator.subtract",
+          id: "subtract",
           style: Secondary,
         },
       ],
@@ -121,28 +113,27 @@ export const calculatorLayout: CalculatorLayout = [
           buttonDisplay: ".",
           textDisplay: ".",
           calculation: ".",
-          id: "calculator.dot",
+          id: "dot",
           style: Primary,
         },
         {
           buttonDisplay: "0",
           textDisplay: "0",
           calculation: "0",
-          id: "calculator.0",
           style: Primary,
         },
         {
           buttonDisplay: "=",
           textDisplay: "=",
           calculation: "=",
-          id: "calculator.calculate",
+          id: "calculate",
           style: Success,
         },
         {
           buttonDisplay: "+",
           textDisplay: "+",
           calculation: "+",
-          id: "calculator.add",
+          id: "add",
           style: Secondary,
         },
       ],
@@ -153,61 +144,61 @@ export const calculatorLayout: CalculatorLayout = [
     buttonRows: [
       [
         {
+          buttonDisplay: "√",
+          textDisplay: "√(",
+          calculation: "sqrt(",
+          id: "sqrt",
+          style: Secondary,
+        },
+        {
           buttonDisplay: "sin",
           textDisplay: "sin(",
           calculation: "sin(",
-          id: "calculator.sin",
+          id: "sin",
           style: Secondary,
         },
         {
           buttonDisplay: "cos",
           textDisplay: "cos(",
           calculation: "cos(",
-          id: "calculator.cos",
+          id: "cos",
           style: Secondary,
         },
         {
           buttonDisplay: "tan",
           textDisplay: "tan(",
           calculation: "tan(",
-          id: "calculator.tan",
+          id: "tan",
+          style: Secondary,
+        },
+      ],
+      [
+        {
+          buttonDisplay: "e^",
+          textDisplay: "e^(",
+          calculation: "exp(",
+          id: "exp",
           style: Secondary,
         },
         {
           buttonDisplay: "log",
           textDisplay: "log(",
           calculation: "log(",
-          id: "calculator.log",
-          style: Secondary,
-        },
-      ],
-      [
-        {
-          buttonDisplay: "√",
-          textDisplay: "√(",
-          calculation: "sqrt(",
-          id: "calculator.sqrt",
-          style: Secondary,
-        },
-        {
-          buttonDisplay: "exp",
-          textDisplay: "exp(",
-          calculation: "exp(",
-          id: "calculator.exp",
+          id: "log",
           style: Secondary,
         },
         {
           buttonDisplay: "ln",
           textDisplay: "ln(",
           calculation: "ln(",
-          id: "calculator.ln",
+          id: "ln",
           style: Secondary,
         },
         {
-          buttonDisplay: "π",
-          textDisplay: "π",
-          calculation: "pi",
-          id: "calculator.pi",
+          buttonDisplay: ",",
+          textDisplay: ",",
+          calculation: ",",
+          id: "comma",
           style: Secondary,
         },
       ],
@@ -216,61 +207,100 @@ export const calculatorLayout: CalculatorLayout = [
           buttonDisplay: "(",
           textDisplay: "(",
           calculation: "(",
-          id: "calculator.openParen",
+          id: "openParen",
           style: Secondary,
         },
         {
           buttonDisplay: ")",
           textDisplay: ")",
           calculation: ")",
-          id: "calculator.closeParen",
+          id: "closeParen",
           style: Secondary,
         },
         {
           buttonDisplay: "!",
           textDisplay: "!",
           calculation: "!",
-          id: "calculator.factorial",
+          id: "factorial",
           style: Secondary,
         },
         {
           buttonDisplay: "^",
           textDisplay: "^",
           calculation: "^",
-          id: "calculator.exponent",
+          id: "exponent",
           style: Secondary,
         },
       ],
       [
         {
-          buttonDisplay: "e",
-          textDisplay: "e",
-          calculation: "e",
-          id: "calculator.e",
-          style: Secondary,
-        },
-        {
           buttonDisplay: "abs",
           textDisplay: "abs(",
           calculation: "abs(",
-          id: "calculator.abs",
+          id: "abs",
           style: Secondary,
         },
         {
           buttonDisplay: "round",
           textDisplay: "round(",
           calculation: "round(",
-          id: "calculator.round",
+          id: "round",
           style: Secondary,
         },
         {
           buttonDisplay: "mod",
           textDisplay: "mod(",
           calculation: "mod(",
-          id: "calculator.mod",
+          id: "mod",
+          style: Secondary,
+        },
+        {
+          buttonDisplay: "%",
+          textDisplay: "%",
+          calculation: "%",
+          id: "remainder",
           style: Secondary,
         },
       ],
     ],
   },
+  {
+    tab: Tabs.Constants,
+    buttonRows: [
+        [
+          {
+            buttonDisplay: "π",
+            textDisplay: "π",
+            calculation: "pi",
+            style: Secondary,
+          },
+          {
+            buttonDisplay: "e",
+            textDisplay: "e",
+            calculation: "e",
+            style: Secondary,
+          },
+          {
+            buttonDisplay: "φ",
+            textDisplay: "φ",
+            calculation: "phi",
+            style: Secondary,
+          },
+          {
+            buttonDisplay: "i",
+            textDisplay: "i",
+            calculation: "i",
+            style: Secondary,
+          }
+        ],
+        [
+          {
+            buttonDisplay: "∞",
+            textDisplay: "∞",
+            calculation: "Infinity",
+            style: Secondary,
+          }
+        ]
+    ]
+  }
 ];

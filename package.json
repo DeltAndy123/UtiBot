@@ -1,11 +1,12 @@
 {
-  "name": "UtiBot",
+  "name": "utibot",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node ."
+    "start": "node .",
+    "dev": "tsc && node ."
   },
   "keywords": [],
   "author": "",
@@ -13,15 +14,15 @@
   "dependencies": {
     "@sapphire/framework": "^5.2.1",
     "@sapphire/plugin-subcommands": "^6.0.3",
-    "discord.js": "^14.15.2",
+    "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
-    "mathjs": "^12.4.2",
+    "mathjs": "^13.0.2",
     "module-alias": "^2.2.3"
   },
   "_moduleAliases": {
     "@util": "dist/util"
   },
   "devDependencies": {
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.3"
   }
 }
