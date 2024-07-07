@@ -98,6 +98,9 @@ export class CalculatorCommand extends Command {
         }
         return (node.args as AnyMathNode[]).some((arg) => hasZeroDivZero(arg));
       }
+      if (node.type === "FunctionNode") {
+        return (node.args as AnyMathNode[]).some((arg) => hasZeroDivZero(arg));
+      }
 
       return false;
     }
